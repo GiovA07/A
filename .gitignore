@@ -30,3 +30,18 @@
 *.exe
 *.out
 *.app
+
+
+# Configuraciones de Visual Studio
+.vs/
+*.suo
+*.user
+*.sln.docstates
+*.suo
+*.cache
+*.pdb
+*.ipch
+*.log
+*.vspscc
+*/bin/
+*/obj/
