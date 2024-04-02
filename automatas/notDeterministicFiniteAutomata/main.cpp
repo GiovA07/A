@@ -12,7 +12,7 @@ int main() {
 
 
     // para ver si el estado inicial esta correcto
-    std::cout << "Es :" << automata.getInitialState() << std::endl;
+    std::cout << "Estado inicia :" << automata.getInitialState() << std::endl;
     
 
 
@@ -22,13 +22,13 @@ int main() {
 
   // para ver si se cargo bien el estado final
   for(const auto& elem: estadosFinal) {
-    std::cout << "Estado final" << elem << std::endl;
+    std::cout << "Estado final :" << elem << std::endl;
   }
 
 
 
   // Obtener el mapa de transiciones
-  /*auto mapaTransiciones = automata.getTransitions();
+  auto mapaTransiciones = automata.getTransitions();
 
   // Verificar si el mapa está vacío
   if (mapaTransiciones.empty()) {
@@ -37,16 +37,16 @@ int main() {
       // Iterar sobre el mapa e imprimir cada par clave-valor
       for (const auto& par : mapaTransiciones) {
           // Imprimir la clave (un par)
-          std::cout << "Clave: (" << par.first.first << ", " << par.first.second << ")" << std::endl;
+          std::cout << "((" << par.first.first << ", " << par.first.second << ")";
 
           // Imprimir el conjunto de valores
-          std::cout << "Valores:";
+          //std::cout << "Valores:";
           for (const auto& valor : par.second) {
-              std::cout << " " << valor;
+              std::cout << " " << valor << ")";
           }
           std::cout << std::endl;
       }
-  }*/
+  }
 
       return 0;
 }

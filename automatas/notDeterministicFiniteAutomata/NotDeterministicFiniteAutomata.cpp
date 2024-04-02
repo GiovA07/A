@@ -128,8 +128,24 @@ using namespace std;
               this->addState(inicio);
               int fin = std::stoi(coincidencias[2]);
               this->addState(fin);
-              int valor = std::stoi(coincidencias[3]);
-              this->addTransition(inicio,fin,valor);
+              
+              std::string estiquetas =(coincidencias[3]);
+              std::vector<int> numeros;
+              //me crae subcadenas utilizando como delimitador la coma "," ejemplo  "22,3" => "22","3"
+              std::istringstream sublis(estiquetas);
+              std::string subcad;
+              //obtengo cada una de esas subcadenas separadas por coma
+              while (std::getline(sublis, subcad, ',')) {
+                int numero;
+                //cambio el tipo de subcadena a entero
+                std::istringstream(subcad) >> numero;
+                numeros.push_back(numero);
+              }
+
+              for(int num : numeros){
+                this->addTransition(inicio,fin,num);
+              }
+
         }else if(std::regex_search(linea,patron3)){
               std::smatch coincidencias;
               std::regex_search(linea, coincidencias, patron3);

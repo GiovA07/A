@@ -3,13 +3,13 @@ digraph{
 rankdir=LR;
 inic[shape=point];
 
-inic->100;
+inic->1;
 
 1->5 [label="2"];
 5->7 [label="22"];
 5->5 [label="22"];
 5->10 [label="2"];
-10->10 [label="2,22"];
+10->10 [label="2 ,22"];
 
 7[shape=doublecircle];
 }
