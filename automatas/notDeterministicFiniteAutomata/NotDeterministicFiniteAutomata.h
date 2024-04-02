@@ -6,6 +6,7 @@
 #include <set>
 #include <utility> // Para std::pair
 #include "../InterfaceFiniteAutomata.h"
+#include <string>
 
 using namespace std;
 
@@ -38,6 +39,7 @@ public:
     void addFinalState(int state);
     void addNewElementAlphabet(int element);
     set<int> getTransitionStates(pair<int, int> key);
+    void readArchivo(std::string archivo);
 
 };
 
