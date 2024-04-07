@@ -51,12 +51,8 @@ void DeterministicFiniteAutomata::setFinalState(set<set<int>> finalStates) {
 
 
 void DeterministicFiniteAutomata::addTransition(set<int> q, int r, set<int> destination) {
-    if (k.find(q) != k.end()) {
-        pair<set<int>, int> path = {q, r};
-        transitions[path] = destination;
-    } else {
-        // exeption
-    }
+    pair<set<int>, int> path = {q, r};
+    transitions[path] = destination;
 }
 
 

@@ -6,7 +6,7 @@
 
 int main() {
     NotDeterministicFiniteAutomata automata;
-    
+
     //automata.setInitialState(10);
 
     //cargo archivo que voi a leer
@@ -16,7 +16,11 @@ int main() {
     // para ver si el estado inicial esta correcto
     std::cout << "Es :" << automata.getInitialState() << std::endl;
 
-
+    cout << "El alfabeto es: {";
+    for (const int& element : automata.getAlphabet()) {
+        cout << element << ",";
+    }
+    cout << "}" << endl;
 
 
   auto estadosFinal = automata.getFinalStates();
@@ -52,18 +56,71 @@ int main() {
   }
 
     DeterministicFiniteAutomata aux = automata.ndafToDfa();
-          
+    std::cout << "------------ DETERMINISTICO ------------" << std::endl;
           if(aux.getInitialState().empty() ){
-            
+
             std::cout << "El mapa de transiciones está vacío." << std::endl;
-          
+
           }else {
 
-          
+
           for (const auto& conj : aux.getInitialState()) {
             std::cout << "(" << conj << ",";
           }
         std::cout << ")" << std::endl;
         }
+
+
+
+
+
+      cout << "El alfabeto es: {";
+      for (const int& element : aux.getAlphabet()) {
+          cout << element << ",";
+      }
+      cout << "}" << endl;
+
+          // Mostrar estados finales
+      cout << "Estados finales:" << endl;
+      if(aux.getFinalStates().empty()) {
+        cout << "vacio xd" << endl;
+      }
+
+
+      for (const set<int>& finalState : aux.getFinalStates()) {
+          cout << "{";
+          for (int state : finalState) {
+              cout << state << ",";
+          }
+          cout << "}" << endl;
+      }
+
+
+        set<set<int>> estados = aux.getK();
+
+        // Mostrar el contenido del conjunto de estados
+        cout << "Estados que hay en el autómata:" << endl;
+        for (const auto& estado : estados) {
+            cout << "{";
+            for (int valor : estado) {
+                cout << valor << ", ";
+            }
+            cout << "}" << endl;
+        }
+
+    cout << "Las transiciones:" << endl;
+    map<pair<set<int>, int>, set<int>> miMapa = aux.getTransitions();
+    // Recorrer el mapa y mostrar cada elemento
+    for (const auto& elemento : miMapa) {
+        cout << "Clave: {";
+        for (int num : elemento.first.first) {
+            cout << num << " ";
+        }
+        cout << "}, " << elemento.first.second << " => {";
+        for (int num : elemento.second) {
+            cout << num << " ";
+        }
+        cout << "}" << endl;
+    }
       return 0;
 }

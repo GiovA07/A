@@ -74,7 +74,7 @@ const int LAMBDA = 0;
   }
 
   set<int> NotDeterministicFiniteAutomata :: getTransitionStates(pair<int,int> key) {
-    if (transitions.find(key) != transitions.end()) { //la transicion existe en el map?
+    if (this->transitions.find(key) != this->transitions.end()) { //la transicion existe en el map?
         return transitions[key];
     } else {
         return {}; //sino existe devuelve conj vacio
@@ -146,7 +146,8 @@ const int LAMBDA = 0;
               }
 
               for(int num : numeros){
-                this->addTransition(inicio,fin,num);
+                this->addNewElementAlphabet(num);
+                this->addTransition(inicio,num,fin);
               }
 
         }else if(regex_search(linea,patron3)){
@@ -178,13 +179,16 @@ set<int> NotDeterministicFiniteAutomata :: lambdaClausure(set<int> state) {
         states_not_visited.erase(current_state);
         states_visited.insert(current_state);
 
+        result.insert(current_state);
+
          set<int> transition = getTransitionStates({current_state, LAMBDA});
 
-         for(int state : transition) {
-            result.insert(state);
-            if (states_visited.find(state) == states_visited.end()) {
-                states_not_visited.insert(state);
+         for(int stateTrans : transition) {
+            result.insert(stateTrans);
+            if (states_visited.find(stateTrans) == states_visited.end()) {
+                states_not_visited.insert(stateTrans);
             }
+            result.insert(stateTrans);
          }
     }
     return result;
@@ -196,6 +200,7 @@ set<int> NotDeterministicFiniteAutomata :: move(set<int> conjState, int element)
 
     for (int state : conjState) {
         set<int> transition = getTransitionStates({state, element});
+
         if(!transition.empty()) {
             //inserta todo elemento de la transicion
             for(int s : transition) {
@@ -208,7 +213,7 @@ set<int> NotDeterministicFiniteAutomata :: move(set<int> conjState, int element)
 
 
 DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
-    DeterministicFiniteAutomata dfa = *new DeterministicFiniteAutomata;
+    DeterministicFiniteAutomata dfa;
 
     //otorgandole el alfabeto
     dfa.setAlphabet(this->alphabet);
@@ -224,6 +229,7 @@ DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
     queue<set<int>> pendingStates;
     pendingStates.push(initialState);
 
+
     // ya visitados
     set<set<int>> visitedStates;
     visitedStates.insert(initialState);
@@ -235,6 +241,7 @@ DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
 
         for (int element : this->alphabet) {
             set<int> newState = move(currentState, element);
+
             newState = lambdaClausure(newState);
 
             //si el nuevo estado no es vacio significa que va haber una transicion.
@@ -250,6 +257,8 @@ DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
         }
     }
 
+    //set estados
+    dfa.setK(visitedStates);
 
     //setear los final state
     set<set<int>> finalStates;
