@@ -6,6 +6,7 @@
 #include <set>
 #include <utility> // Para std::pair
 #include "../InterfaceFiniteAutomata.h"
+#include "../deterministicAutomata/DeterministicFiniteAutomata.h"
 #include <string>
 
 using namespace std;
@@ -41,6 +42,11 @@ public:
     set<int> getTransitionStates(pair<int, int> key);
     void readArchivo(std::string archivo);
 
+    DeterministicFiniteAutomata nfaToDfa();
+
+private:
+    set<int> lambdaClausure(set<int> state, map<pair<int, int>, set<int>> transitions);
+    set<int> move(set<int> state, int element);
 };
 
 #endif

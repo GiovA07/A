@@ -52,7 +52,7 @@ using namespace std;
   }
 
   void NotDeterministicFiniteAutomata :: addTransition(int q, int r, int destination){
-    if (k.find(q) != k.end() && k.find(q) != k.end()){ 
+    if (k.find(q) != k.end() && k.find(q) != k.end()){
       pair<int, int> path = {q, r};
       transitions[path].insert(destination);
     } //SINO EXCEPCION...
@@ -78,67 +78,67 @@ using namespace std;
     }
   }
 
-  void NotDeterministicFiniteAutomata:: readArchivo(std::string arch) {
-    
-    std::ifstream archivo(arch);
+  void NotDeterministicFiniteAutomata:: readArchivo(string arch) {
+
+    ifstream archivo(arch);
 
     if(!archivo.is_open()) {
-      std::cerr << "Error al abrir el archivo" << std::endl;
+      cerr << "Error al abrir el archivo" << endl;
       return;
     }
     // recorrer todal las lineas
-    std::string linea;
-    
+    string linea;
+
     //expresion regular
-    std::regex patron0("^digraph\\{");
+    regex patron0("^digraph\\{");
     // expresion regular para buscar el estado inicial
-    std::regex patron1("inic->([0-9]+);"); 
+    regex patron1("inic->([0-9]+);");
     // expresion regular  para buscar las transisicones
-    std::regex patron2("([0-9]+)->([0-9]+)\\s*\\[label=\"([^\"]*)\"\\];");
+    regex patron2("([0-9]+)->([0-9]+)\\s*\\[label=\"([^\"]*)\"\\];");
     // expresion regular para buscar estados finales
-    std::regex patron3("([0-9]+)\\[shape=doublecircle\\]");
+    regex patron3("([0-9]+)\\[shape=doublecircle\\]");
     //consumo la ultima linea
-    std::regex patron4("}");
+    regex patron4("}");
     //
-    std::regex patron5("rankdir=LR;");
+    regex patron5("rankdir=LR;");
     //
-    std::regex patron6("inic\\[shape=point\\];");
+    regex patron6("inic\\[shape=point\\];");
 
-    
-    while(std::getline(archivo, linea)) {
-      if(!linea.empty()){        
-        
-        if(std::regex_search(linea,patron0)){
 
-        }else if(std::regex_search(linea,patron5)){
+    while(getline(archivo, linea)) {
+      if(!linea.empty()){
 
-        }else if(std::regex_search(linea,patron6)){
+        if(regex_search(linea,patron0)){
+
+        }else if(regex_search(linea,patron5)){
+
+        }else if(regex_search(linea,patron6)){
 
         }
-        else if(std::regex_search(linea,patron1)){
-              std::smatch coincidencias;
-              std::regex_search(linea, coincidencias, patron1);
-              int valor = std::stoi(coincidencias[1]);
+        else if(regex_search(linea,patron1)){
+              smatch coincidencias;
+              regex_search(linea, coincidencias, patron1);
+              int valor = stoi(coincidencias[1]);
               this->addState(valor);
               this->setInitialState(valor);
-        }else if(std::regex_search(linea,patron2)){
-              std::smatch coincidencias;
-              std::regex_search(linea, coincidencias, patron2);
-              int inicio = std::stoi(coincidencias[1]);
+        }else if(regex_search(linea,patron2)){
+              smatch coincidencias;
+              regex_search(linea, coincidencias, patron2);
+              int inicio = stoi(coincidencias[1]);
               this->addState(inicio);
-              int fin = std::stoi(coincidencias[2]);
+              int fin = stoi(coincidencias[2]);
               this->addState(fin);
-              
-              std::string estiquetas =(coincidencias[3]);
-              std::vector<int> numeros;
+
+              string estiquetas =(coincidencias[3]);
+              vector<int> numeros;
               //me crae subcadenas utilizando como delimitador la coma "," ejemplo  "22,3" => "22","3"
-              std::istringstream sublis(estiquetas);
-              std::string subcad;
+              istringstream sublis(estiquetas);
+              string subcad;
               //obtengo cada una de esas subcadenas separadas por coma
-              while (std::getline(sublis, subcad, ',')) {
+              while (getline(sublis, subcad, ',')) {
                 int numero;
                 //cambio el tipo de subcadena a entero
-                std::istringstream(subcad) >> numero;
+                istringstream(subcad) >> numero;
                 numeros.push_back(numero);
               }
 
@@ -146,14 +146,14 @@ using namespace std;
                 this->addTransition(inicio,fin,num);
               }
 
-        }else if(std::regex_search(linea,patron3)){
-              std::smatch coincidencias;
-              std::regex_search(linea, coincidencias, patron3);
-              int fin = std::stoi(coincidencias[1]);
+        }else if(regex_search(linea,patron3)){
+              smatch coincidencias;
+              regex_search(linea, coincidencias, patron3);
+              int fin = stoi(coincidencias[1]);
               this->addFinalState(fin);
-        }else if(std::regex_search(linea,patron4)){
-              
-        }else{ 
+        }else if(regex_search(linea,patron4)){
+
+        }else{
         std::cerr << "Error archivo incorrecto" << endl;
         return;
       }
@@ -162,3 +162,28 @@ using namespace std;
   }
     archivo.close();
   }
+
+
+
+set<int> NotDeterministicFiniteAutomata :: lambdaClausure(set<int> state, map<pair<int, int>, set<int>> transitions) {
+    int lambda = 0;
+    set<int> result;
+    set<int> states_visited;
+    set<int> states_not_visited = state;
+
+    while(states_not_visited.size() > 0) {
+        int current_state = *states_not_visited.begin();
+        states_not_visited.erase(current_state);
+        states_visited.insert(current_state);
+
+         set<int> transition = getTransitionStates({current_state, lambda});
+
+         for(int state : transition) {
+            result.insert(state);
+            if (states_visited.find(state) == states_visited.end()) {
+                states_not_visited.insert(state);
+            }
+         }
+    }
+    return result;
+}
