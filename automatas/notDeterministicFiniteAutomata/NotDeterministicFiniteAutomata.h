@@ -4,10 +4,12 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <queue>
 #include <utility> // Para std::pair
 #include "../InterfaceFiniteAutomata.h"
 #include "../deterministicAutomata/DeterministicFiniteAutomata.h"
 #include <string>
+
 
 using namespace std;
 

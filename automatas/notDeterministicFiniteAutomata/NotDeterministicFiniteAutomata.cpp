@@ -6,6 +6,8 @@
 
 using namespace std;
 
+const int LAMBDA = 0;
+
   NotDeterministicFiniteAutomata :: NotDeterministicFiniteAutomata() : k(), alphabet(), transitions(), q0(0), f() {
   }
 
@@ -166,17 +168,16 @@ using namespace std;
 
 
 set<int> NotDeterministicFiniteAutomata :: lambdaClausure(set<int> state) {
-    int lambda = 0;
     set<int> result;
     set<int> states_not_visited = state;
     set<int> states_visited;
 
-    while(states_not_visited.size() > 0) {
+    while(!states_not_visited.empty()) {
         int current_state = *states_not_visited.begin();
         states_not_visited.erase(current_state);
         states_visited.insert(current_state);
 
-         set<int> transition = getTransitionStates({current_state, lambda});
+         set<int> transition = getTransitionStates({current_state, LAMBDA});
 
          for(int state : transition) {
             result.insert(state);
@@ -206,5 +207,59 @@ set<int> NotDeterministicFiniteAutomata :: move(set<int> conjState, int element)
 
 
 DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
-    return null;
+    DeterministicFiniteAutomata dfa = *new DeterministicFiniteAutomata;
+
+    //otorgandole el alfabeto
+    dfa.setAlphabet(this->alphabet);
+
+    //creando conj inicial
+    set<int> initialState;
+    initialState.insert(this->q0);
+    set<int> initialState = lambdaClausure(initialState);
+    dfa.setInitialState(initialState);
+
+    //faltan visitar
+    queue<set<int>> pendingStates;
+    pendingStates.push(initialState);
+
+    // ya visitados
+    set<set<int>> visitedStates;
+    visitedStates.insert(initialState);
+
+
+    while (!pendingStates.empty()) {
+        set<int> currentState = pendingStates.front();
+        pendingStates.pop();
+
+        for (int element : this->alphabet) {
+            set<int> newState = move(currentState, element);
+            newState = lambdaClausure(newState);
+
+            //si el nuevo estado no es vacio significa que va haber una transicion.
+            if(!newState.empty()) {
+                dfa.addTransition(currentState, element, newState);
+
+                //si el nuevo estado no fue visitado entonces agregarlo.
+                if (visitedStates.find(newState) == visitedStates.end()) {
+                        pendingStates.push(newState);
+                        visitedStates.insert(newState);
+                }
+            }
+        }
+    }
+
+
+    //setear los final state
+    set<set<int>> finalStates;
+    for (set<int> state : visitedStates) {
+        for(int fStateNDA : this->f) {
+            if(state.find(fStateNDA) != state.end()) {
+                finalStates.insert(state);
+            }
+        }
+    }
+
+    dfa.setFinalState(finalStates);
+
+    return dfa;
 }
