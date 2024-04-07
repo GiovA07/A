@@ -165,11 +165,11 @@ using namespace std;
 
 
 
-set<int> NotDeterministicFiniteAutomata :: lambdaClausure(set<int> state, map<pair<int, int>, set<int>> transitions) {
+set<int> NotDeterministicFiniteAutomata :: lambdaClausure(set<int> state) {
     int lambda = 0;
     set<int> result;
-    set<int> states_visited;
     set<int> states_not_visited = state;
+    set<int> states_visited;
 
     while(states_not_visited.size() > 0) {
         int current_state = *states_not_visited.begin();
@@ -186,4 +186,25 @@ set<int> NotDeterministicFiniteAutomata :: lambdaClausure(set<int> state, map<pa
          }
     }
     return result;
+}
+
+
+set<int> NotDeterministicFiniteAutomata :: move(set<int> conjState, int element) {
+    set<int> result;
+
+    for (int state : conjState) {
+        set<int> transition = getTransitionStates({state, element});
+        if(!transition.empty()) {
+            //inserta todo elemento de la transicion
+            for(int s : transition) {
+                result.insert(s);
+            }
+        }
+    }
+    return result;
+}
+
+
+DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
+    return null;
 }
