@@ -1,5 +1,8 @@
 #include "DeterministicFiniteAutomata.h"
 
+DeterministicFiniteAutomata :: DeterministicFiniteAutomata() : k(), alphabet(), transitions(), q0(), f() {
+}
+
 // Getters
 set<set<int>> DeterministicFiniteAutomata::getK() {
     return k;

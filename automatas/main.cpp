@@ -1,15 +1,16 @@
 #include <iostream>
-#include "NotDeterministicFiniteAutomata.h"
-#include "NotDeterministicFiniteAutomata.cpp"
+//#include "deterministicAutomata/DeterministicFiniteAutomata.cpp"
+#include "notDeterministicFiniteAutomata/NotDeterministicFiniteAutomata.cpp"
 #include "string"
 
 
 int main() {
     NotDeterministicFiniteAutomata automata;
+    
     //automata.setInitialState(10);
 
     //cargo archivo que voi a leer
-    automata.readArchivo("../archivos_automatas/automata.txt");
+    automata.readArchivo("../archivos_automatas/automata.dot");
 
 
     // para ver si el estado inicial esta correcto
@@ -28,8 +29,8 @@ int main() {
 
 
 
-  // Obtener el mapa de transiciones
-  /*auto mapaTransiciones = automata.getTransitions();
+ // Obtener el mapa de transiciones
+  auto mapaTransiciones = automata.getTransitions();
 
   // Verificar si el mapa está vacío
   if (mapaTransiciones.empty()) {
@@ -38,16 +39,31 @@ int main() {
       // Iterar sobre el mapa e imprimir cada par clave-valor
       for (const auto& par : mapaTransiciones) {
           // Imprimir la clave (un par)
-          std::cout << "Clave: (" << par.first.first << ", " << par.first.second << ")" << std::endl;
-
+          //for(const auto& est :par.first.second) {
+            std::cout << "((" << par.first.first << ", " << par.first.second << ")";
+          //}
           // Imprimir el conjunto de valores
-          std::cout << "Valores:";
+          //std::cout << "Valores:";
           for (const auto& valor : par.second) {
-              std::cout << " " << valor;
+              std::cout << " " << valor << ")";
           }
           std::cout << std::endl;
       }
-  }*/
+  }
 
+    DeterministicFiniteAutomata aux = automata.ndafToDfa();
+          
+          if(aux.getInitialState().empty() ){
+            
+            std::cout << "El mapa de transiciones está vacío." << std::endl;
+          
+          }else {
+
+          
+          for (const auto& conj : aux.getInitialState()) {
+            std::cout << "(" << conj << ",";
+          }
+        std::cout << ")" << std::endl;
+        }
       return 0;
 }

@@ -1,4 +1,5 @@
 #include "NotDeterministicFiniteAutomata.h"
+#include "../deterministicAutomata/DeterministicFiniteAutomata.cpp"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -215,7 +216,8 @@ DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
     //creando conj inicial
     set<int> initialState;
     initialState.insert(this->q0);
-    set<int> initialState = lambdaClausure(initialState);
+    set<int> auxSet= lambdaClausure(initialState);
+    initialState.insert(auxSet.begin(),auxSet.end());
     dfa.setInitialState(initialState);
 
     //faltan visitar
