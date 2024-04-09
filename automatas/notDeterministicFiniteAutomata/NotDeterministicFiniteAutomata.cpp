@@ -168,6 +168,54 @@ const int LAMBDA = 0;
     archivo.close();
   }
 
+map<pair<int,int>, set<int>> NotDeterministicFiniteAutomata:: getTransitionsWrite(){
+  
+  map<pair<int,int>, set<int>> res;
+  for(const auto&clave : this->getTransitions()) {
+    for(const auto& elem :clave.second){
+      pair<int,int> path = {clave.first.first,elem};
+      res[path].insert(clave.first.second);
+    }
+  }
+  return res;
+}
+
+
+void NotDeterministicFiniteAutomata:: writeArchivo(string arch) {
+  std::ofstream archivo(arch);
+  if(!archivo.is_open()) {
+    cerr << "Error al abrir el archivo" << endl;
+  return;
+  }
+  archivo << "digraph{\n" << std::endl;
+  archivo << "rankdir=LR;" << std::endl;
+  archivo << "inic[shape=point];\n" << std::endl;
+  archivo << "inic->" << this->getInitialState()<< ";\n"<< std::endl;
+  map<pair<int,int>, set<int>> res = this->getTransitionsWrite();
+  
+  for(const auto&clave : res) {
+    archivo << clave.first.first << "->" << clave.first.second <<" [label=\"";
+    for(const auto& elem : clave.second) {
+      if(elem == *clave.second.rbegin()){
+      archivo << elem;
+      } else {
+        archivo << elem << ", ";
+      }
+    
+    }
+    archivo << "\"];" << std::endl;
+
+  }
+  
+  for(const auto& num : this->getFinalStates()) {
+    archivo << "\n" << num << "[shape=doublecircle];" << std::endl;
+  }
+  archivo << "}" << std::endl;
+
+  archivo.close();
+
+}
+
 
 
 set<int> NotDeterministicFiniteAutomata :: lambdaClausure(set<int> state) {

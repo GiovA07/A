@@ -55,6 +55,9 @@ int main() {
       }
   }
 
+  //escribo el automata en un archivo  
+  automata.writeArchivo("../archivos_automatas/automataWrite2.dot");
+
     DeterministicFiniteAutomata aux = automata.ndafToDfa();
     std::cout << "------------ DETERMINISTICO ------------" << std::endl;
           if(aux.getInitialState().empty() ){
@@ -127,6 +130,6 @@ int main() {
   q = aux.getTransitionStates({q, 7});
 
 
-    cout << aux.pertenece("76666") << " Es el resultado de la cadena";
+    cout << aux.pertenece("76666") << " Es el resultado de la cadena \n";
       return 0;
 }
