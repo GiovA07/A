@@ -79,6 +79,40 @@ set<int> DeterministicFiniteAutomata :: getTransitionStates(pair<set<int>, int> 
 
 
 
+bool DeterministicFiniteAutomata :: pertenece(string s) {
+    set<int> alphabet = this->getAlphabet();
+
+    map<pair<set<int>,int>, set<int>> transitions = this->getTransitions();
+    set<int> q = this->getInitialState();
+    bool result = true;
+
+
+    for (size_t i = 0; i < s.length(); ++i) {
+        char caracter = s[i];
+        int element = caracter - '0';
+
+        if(alphabet.find(element) != alphabet.end()) {
+            set<int> conjTransition = this->getTransitionStates({q,element});
+            if(conjTransition.empty())
+                return false;
+            q.clear();
+            for (int state : conjTransition) {
+                q.insert(state); // Insertar cada estado de transition en q
+            }
+
+        } else {
+            return false;
+        }
+    }
+
+    set<set<int>> final_States = this->getFinalStates();
+    if(final_States.find(q) == final_States.end())
+        result = false;
+
+    return result;
+}
+
+
 
 
 

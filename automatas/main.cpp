@@ -10,7 +10,7 @@ int main() {
     //automata.setInitialState(10);
 
     //cargo archivo que voi a leer
-    automata.readArchivo("../archivos_automatas/automata.dot");
+    automata.readArchivo("../archivos_automatas/automata2.dot");
 
 
     // para ver si el estado inicial esta correcto
@@ -122,5 +122,11 @@ int main() {
         }
         cout << "}" << endl;
     }
+
+  set<int> q = aux.getInitialState();
+  q = aux.getTransitionStates({q, 7});
+
+
+    cout << aux.pertenece("76666") << " Es el resultado de la cadena";
       return 0;
 }

@@ -40,6 +40,7 @@ public:
     void addNewElementAlphabet(int element);
     set<int> getTransitionStates(pair<set<int>, int> key);
 
+    bool pertenece(string s);
 };
 
 #endif

@@ -146,7 +146,8 @@ const int LAMBDA = 0;
               }
 
               for(int num : numeros){
-                this->addNewElementAlphabet(num);
+                if (num != 0)
+                  this->addNewElementAlphabet(num);
                 this->addTransition(inicio,num,fin);
               }
 
