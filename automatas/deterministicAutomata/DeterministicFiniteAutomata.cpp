@@ -52,9 +52,15 @@ void DeterministicFiniteAutomata::setFinalState(set<set<int>> finalStates) {
 
 void DeterministicFiniteAutomata::addTransition(set<int> q, int r, set<int> destination) {
     pair<set<int>, int> path = {q, r};
-    transitions[path] = destination;
+    auto it = transitions.find(path);
+    if (it != transitions.end()) {
+        // La transición ya existe, actualizar el destino
+        it->second = destination;
+    } else {
+        // La transición no existe, añadir una nueva
+        transitions[path] = destination;
+    }
 }
-
 
 void DeterministicFiniteAutomata::addState(set<int> state) {
     this->k.insert(state);
@@ -76,6 +82,16 @@ set<int> DeterministicFiniteAutomata :: getTransitionStates(pair<set<int>, int> 
         return {}; //sino existe devuelve conj vacio
     }
 }
+
+
+void DeterministicFiniteAutomata :: readFile(std::string arch) {
+
+}
+
+void DeterministicFiniteAutomata :: writeFile(std::string arch) {
+
+}
+
 
 
 

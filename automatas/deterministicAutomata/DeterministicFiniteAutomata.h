@@ -40,6 +40,10 @@ public:
     void addNewElementAlphabet(int element);
     set<int> getTransitionStates(pair<set<int>, int> key);
 
+    void readFile(std::string arch);
+    void writeFile(std::string arch);
+
+
     bool pertenece(string s);
 };
 

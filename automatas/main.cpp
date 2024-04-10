@@ -10,7 +10,7 @@ int main() {
     //automata.setInitialState(10);
 
     //cargo archivo que voi a leer
-    automata.readArchivo("../archivos_automatas/automata2.dot");
+    automata.readArchivo("../archivos_automatas/automata.dot");
 
 
     // para ver si el estado inicial esta correcto
@@ -55,7 +55,7 @@ int main() {
       }
   }
 
-  //escribo el automata en un archivo  
+  //escribo el automata en un archivo
   automata.writeArchivo("../archivos_automatas/automataWrite2.dot");
 
     DeterministicFiniteAutomata aux = automata.ndafToDfa();
@@ -126,8 +126,8 @@ int main() {
         cout << "}" << endl;
     }
 
-  set<int> q = aux.getInitialState();
-  q = aux.getTransitionStates({q, 7});
+    set<int> q = aux.getInitialState();
+    q = aux.getTransitionStates({q, 7});
 
 
     cout << aux.pertenece("76666") << " Es el resultado de la cadena \n";
