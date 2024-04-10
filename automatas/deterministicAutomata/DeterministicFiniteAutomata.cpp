@@ -252,9 +252,11 @@ void DeterministicFiniteAutomata :: writeFile(std::string arch) {
     archivo << "\"];" << std::endl;
     }
 
-    archivo << "\n\"";
+    archivo << "\n";
     for(const auto& num : this->getFinalStates()) {
+    archivo << "\"";
      for(int numConj : num) {
+      
       if(numConj == *num.rbegin()){
         archivo << numConj;
       } else {

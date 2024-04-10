@@ -129,6 +129,7 @@ int main() {
 
     set<int> q = aux.getInitialState();
     q = aux.getTransitionStates({q, 7});
+ 
 
     aux.writeFile("../archivos_automatas/automatFiniteWrite.dot");
 
