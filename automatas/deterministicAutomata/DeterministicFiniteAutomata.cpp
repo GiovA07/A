@@ -1,4 +1,8 @@
 #include "DeterministicFiniteAutomata.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <regex>
 
 DeterministicFiniteAutomata :: DeterministicFiniteAutomata() : k(), alphabet(), transitions(), q0(), f() {
 }
@@ -86,13 +90,195 @@ set<int> DeterministicFiniteAutomata :: getTransitionStates(pair<set<int>, int> 
 
 void DeterministicFiniteAutomata :: readFile(std::string arch) {
 
+    ifstream archivo(arch);
+
+    if(!archivo.is_open()) {
+      cerr << "Error al abrir el archivo" << endl;
+      return;
+    }
+    // recorrer todal las lineas
+    string linea;
+
+    //expresion regular
+    regex patron0("^digraph\\{");
+    // expresion regular para buscar el estado inicial
+    regex patron1("inic->\"([^\"]*)\";");
+
+    // expresion regular  para buscar las transisicones
+    regex patron2("\"([^\"]*)\"->\"([^\"]*)\"\\s*\\[label=\"([^\"]*)\"\\];");
+    // expresion regular para buscar estados finales
+    regex patron3("\"([^\"]*)\"\\[shape=doublecircle\\]");
+    //consumo la ultima linea
+    regex patron4("}");
+    //
+    regex patron5("rankdir=LR;");
+    //
+    regex patron6("inic\\[shape=point\\];");
+
+
+    while(getline(archivo, linea)) {
+      if(!linea.empty()){
+
+        if(regex_search(linea,patron0)){
+
+        }else if(regex_search(linea,patron5)){
+
+        }else if(regex_search(linea,patron6)){
+
+        }
+        else if(regex_search(linea,patron1)){
+              smatch coincidencias;
+              regex_search(linea, coincidencias, patron1);
+              string valor = (coincidencias[1]);
+              vector<int> numeros = stringNum(valor);
+              set<int> aux;
+              for(int num : numeros) {
+                aux.insert(num);
+              }
+              this->addState(aux);
+              this->setInitialState(aux);
+        }else if(regex_search(linea,patron2)){
+              smatch coincidencias;
+              regex_search(linea, coincidencias, patron2);
+              string inicio =(coincidencias[1]);
+              
+              vector<int> numerosInic = stringNum(inicio);
+              set<int> auxInic;
+                for(int num : numerosInic) {
+                auxInic.insert(num);
+              }
+              this->addState(auxInic);
+
+              string fin =(coincidencias[2]);
+              vector<int> numerosFin = stringNum(fin);
+              set<int> auxFin;
+                for(int num : numerosFin) {
+                auxFin.insert(num);
+              }
+              this->addState(auxFin);
+
+              string estiquetas =(coincidencias[3]);
+              vector<int> numeros = stringNum(estiquetas);
+              for(int num : numeros){
+                if (num != 0)
+                  this->addNewElementAlphabet(num);
+                this->addTransition(auxInic,num,auxFin);
+              }
+
+        }else if(regex_search(linea,patron3)){
+              smatch coincidencias;
+              regex_search(linea, coincidencias, patron3);
+              string fin = (coincidencias[1]);
+              vector<int> numeros = stringNum(fin);
+              set<int> auxFin;
+              for(int num : numeros){
+                auxFin.insert(num);
+              }
+              this->addFinalState(auxFin);
+
+        }else if(regex_search(linea,patron4)){
+
+        }else{
+        std::cerr << "Error archivo incorrecto" << endl;
+        return;
+      }
+    }
+
+  }
+    archivo.close();
+}
+
+vector<int> DeterministicFiniteAutomata :: stringNum(std::string cad) {
+    vector<int> numeros;
+    //me crae subcadenas utilizando como delimitador la coma "," ejemplo  "22,3" => "22","3"
+    istringstream sublis(cad);
+    string subcad;
+    //obtengo cada una de esas subcadenas separadas por coma
+    while (getline(sublis, subcad, ',')) {
+      int numero;
+      //cambio el tipo de subcadena a entero
+      istringstream(subcad) >> numero;
+      numeros.push_back(numero);
+    }
+    return numeros;
 }
 
 void DeterministicFiniteAutomata :: writeFile(std::string arch) {
+  std::ofstream archivo(arch);
+  if(!archivo.is_open()) {
+    cerr << "Error al abrir el archivo" << endl;
+  return;
+  }
+  archivo << "digraph{\n" << std::endl;
+  archivo << "rankdir=LR;" << std::endl;
+  archivo << "inic[shape=point];\n" << std::endl;
+  archivo << "inic->\"";
+  for(int num : this->getInitialState()) {
+    if(num == *this->getInitialState().rbegin()){
+      archivo << num;
+      } else {
+        archivo << num << ",";
+      }
+  }
+  archivo << "\";\n"<< std::endl;
+
+  map<pair<set<int>,set<int>>, set<int>> aux = getTransitionsWrite();
+
+  for(const auto&clave : aux) {
+  archivo << "\"";
+    for(int numIni : clave.first.first) {
+      if(numIni == *clave.first.first.rbegin()){
+        archivo << numIni;
+      } else {
+        archivo << numIni << ",";
+      } 
+    }
+    archivo << "\"->\"" ;
+    for(int numFin : clave.first.second) {
+      if(numFin == *clave.first.second.rbegin()){
+        archivo << numFin;
+      } else {
+        archivo << numFin << ",";
+      } 
+    }
+    archivo <<"\" [label=\"";
+    for(int num : clave.second){
+        if(num == *clave.second.rbegin()){
+          archivo << num;
+        } else {
+           archivo << num << ",";
+        } 
+    }
+    archivo << "\"];" << std::endl;
+    }
+
+    archivo << "\n\"";
+    for(const auto& num : this->getFinalStates()) {
+     for(int numConj : num) {
+      if(numConj == *num.rbegin()){
+        archivo << numConj;
+      } else {
+        archivo << numConj << ",";
+      } 
+     }
+     archivo << "\"[shape=doublecircle];" << std::endl;
+    }
+    archivo << "}" << std::endl;
+
+    archivo.close();
 
 }
 
-
+map<pair<set<int>,set<int>>, set<int>> DeterministicFiniteAutomata :: getTransitionsWrite(){
+   map<pair<set<int>,set<int>>, set<int>> res;
+   for(const auto&clave : this->getTransitions()) {
+     for(const auto& elem :clave.second){
+        pair<set<int>,set<int>> path = {clave.first.first,clave.second};
+        res[path].insert(clave.first.second);
+     }
+   } 
+   return res;
+}
 
 
 bool DeterministicFiniteAutomata :: pertenece(string s) {

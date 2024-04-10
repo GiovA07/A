@@ -5,7 +5,7 @@
 
 
 int main() {
-    NotDeterministicFiniteAutomata automata;
+/*   NotDeterministicFiniteAutomata automata;
 
     //automata.setInitialState(10);
 
@@ -54,11 +54,12 @@ int main() {
           std::cout << std::endl;
       }
   }
-
+*/
   //escribo el automata en un archivo
-  automata.writeArchivo("../archivos_automatas/automataWrite2.dot");
-
-    DeterministicFiniteAutomata aux = automata.ndafToDfa();
+ // automata.writeArchivo("../archivos_automatas/automataWrite2.dot");
+    DeterministicFiniteAutomata aux;
+    aux.readFile("../archivos_automatas/automatfinite.dot");
+    
     std::cout << "------------ DETERMINISTICO ------------" << std::endl;
           if(aux.getInitialState().empty() ){
 
@@ -129,7 +130,8 @@ int main() {
     set<int> q = aux.getInitialState();
     q = aux.getTransitionStates({q, 7});
 
+    aux.writeFile("../archivos_automatas/automatFiniteWrite.dot");
 
     cout << aux.pertenece("76666") << " Es el resultado de la cadena \n";
-      return 0;
+    return 0;
 }

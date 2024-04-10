@@ -42,9 +42,11 @@ public:
 
     void readFile(std::string arch);
     void writeFile(std::string arch);
-
-
+    
     bool pertenece(string s);
+private:
+    vector<int> stringNum(std::string cad);
+    map<pair<set<int>,set<int>>, set<int>> getTransitionsWrite();
 };
 
 #endif
