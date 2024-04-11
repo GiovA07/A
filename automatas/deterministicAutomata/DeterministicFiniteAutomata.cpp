@@ -87,6 +87,82 @@ set<int> DeterministicFiniteAutomata :: getTransitionStates(pair<set<int>, int> 
     }
 }
 
+void DeterministicFiniteAutomata :: print() {
+    if(q0.empty() ){
+        std::cout << "El estado inicial es vacio." << std::endl;
+
+    }else {
+        for (const auto& conj : q0) {
+            std::cout << "(" << conj << ",";
+        }
+            std::cout << ")" << std::endl;
+    }
+
+    cout << "El alfabeto es: {";
+     for (const int& element : alphabet) {
+         cout << element << ",";
+     }
+    cout << "}" << endl;
+
+    cout << "Estados finales:" << endl;
+    if(f.empty()) {
+      cout << "vacio xd" << endl;
+    }
+    for (const set<int>& finalState : f) {
+        cout << "{";
+        for (int state : finalState) {
+            cout << state << ",";
+        }
+        cout << "}" << endl;
+    }
+
+    cout << "Las transiciones son: " << endl;
+    map<pair<set<int>, int>, set<int>> miMapa = transitions;
+    // Recorrer el mapa y mostrar cada elemento
+    for (const auto& elemento : miMapa) {
+        cout << "Clave: {";
+        for (int num : elemento.first.first) {
+            cout << num << " ";
+        }
+        cout << "}, " << elemento.first.second << " => {";
+        for (int num : elemento.second) {
+            cout << num << " ";
+        }
+        cout << "}" << endl;
+    }
+}
+
+void DeterministicFiniteAutomata :: menu() {
+    while(true) {
+        string nameFile;
+        int option;
+        cout << "Que Quieres Hacer?.\n";
+        cout << "1- Mostrarlo por pantalla.\n";
+        cout << "2- Escribirlo en un archivo.\n";
+        cout << "Cualquier otro numero SALIR.\n";
+        cout << "Ingresa el numero: ";
+        cin >> option;
+        if (option != 1 && option != 2) {
+            break;
+        }
+
+        switch (option)
+        {
+        case 1:
+            print();
+            break;
+        case 2:
+            cin.ignore();
+            cout << "Ingrese el nombre del archivo (sin .dot) para escribir el automata: ";
+            getline(cin, nameFile);
+            writeFile("../archivos_automatas/" + nameFile + ".dot");
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 
 void DeterministicFiniteAutomata :: readFile(std::string arch) {
 
@@ -141,7 +217,7 @@ void DeterministicFiniteAutomata :: readFile(std::string arch) {
               smatch coincidencias;
               regex_search(linea, coincidencias, patron2);
               string inicio =(coincidencias[1]);
-              
+
               vector<int> numerosInic = stringNum(inicio);
               set<int> auxInic;
                 for(int num : numerosInic) {
@@ -231,7 +307,7 @@ void DeterministicFiniteAutomata :: writeFile(std::string arch) {
         archivo << numIni;
       } else {
         archivo << numIni << ",";
-      } 
+      }
     }
     archivo << "\"->\"" ;
     for(int numFin : clave.first.second) {
@@ -239,7 +315,7 @@ void DeterministicFiniteAutomata :: writeFile(std::string arch) {
         archivo << numFin;
       } else {
         archivo << numFin << ",";
-      } 
+      }
     }
     archivo <<"\" [label=\"";
     for(int num : clave.second){
@@ -247,7 +323,7 @@ void DeterministicFiniteAutomata :: writeFile(std::string arch) {
           archivo << num;
         } else {
            archivo << num << ",";
-        } 
+        }
     }
     archivo << "\"];" << std::endl;
     }
@@ -256,12 +332,12 @@ void DeterministicFiniteAutomata :: writeFile(std::string arch) {
     for(const auto& num : this->getFinalStates()) {
     archivo << "\"";
      for(int numConj : num) {
-      
+
       if(numConj == *num.rbegin()){
         archivo << numConj;
       } else {
         archivo << numConj << ",";
-      } 
+      }
      }
      archivo << "\"[shape=doublecircle];" << std::endl;
     }
@@ -278,7 +354,7 @@ map<pair<set<int>,set<int>>, set<int>> DeterministicFiniteAutomata :: getTransit
         pair<set<int>,set<int>> path = {clave.first.first,clave.second};
         res[path].insert(clave.first.second);
      }
-   } 
+   }
    return res;
 }
 

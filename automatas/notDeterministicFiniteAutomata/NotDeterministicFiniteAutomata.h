@@ -42,8 +42,10 @@ public:
     void addFinalState(int state);
     void addNewElementAlphabet(int element);
     set<int> getTransitionStates(pair<int, int> key);
-    void readArchivo(std::string arch);
-    void writeArchivo(std::string arch);
+    void readArchivo(string arch);
+    void writeArchivo(string arch);
+    void print();
+    void menu();
 
     DeterministicFiniteAutomata ndafToDfa();
 

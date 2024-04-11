@@ -81,6 +81,81 @@ const int LAMBDA = 0;
     }
   }
 
+  void NotDeterministicFiniteAutomata :: print() {
+    cout << "El Estado inicial es: " << q0 << std::endl;
+
+    cout << "El alfabeto es: {";
+    for (const int& element : alphabet) {
+        cout << element << ",";
+    }
+    cout << "}" << endl;
+
+
+    for(const auto& elem: f) {
+        cout << "El/Los Estados Finales son: " << elem << std::endl;
+    }
+
+    if (transitions.empty()) {
+        std::cout << "No Existe Ninguna Transicion" << std::endl;
+    } else {
+        // Iterar sobre el mapa e imprimir cada par clave-valor
+        for (const auto& par : transitions) {
+            // Imprimir la clave (un par)
+            //for(const auto& est :par.first.second) {
+              std::cout << "((" << par.first.first << ", " << par.first.second << ")";
+            //}
+            // Imprimir el conjunto de valores
+            //std::cout << "Valores:";
+            for (const auto& valor : par.second) {
+                std::cout << " " << valor << ")";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+}
+
+void NotDeterministicFiniteAutomata :: menu() {
+    while(true) {
+        string nameFile;
+        int option;
+        cout << "Que Quieres Hacer?\n";
+        cout << "1- Mostrarlo por pantalla.\n";
+        cout << "2- Escribirlo en un archivo.\n";
+        cout << "3- Tranformarlo en Deterministico.\n";
+        cout << "Cualquier otro numero SALIR.\n";
+        cout << "Ingresa el numero: ";
+        cin >> option;
+        if (option != 1 && option != 2 && option != 3) {
+            break;
+        }
+        DeterministicFiniteAutomata dfa;
+        switch (option)
+        {
+        case 1:
+            print();
+            break;
+        case 2:
+            cin.ignore();
+            cout << "Ingrese el nombre del archivo (sin .dot) para escribir el automata: ";
+            getline(cin, nameFile);
+            writeArchivo("../archivos_automatas/" + nameFile + ".dot");
+            break;
+        case 3:
+            dfa = ndafToDfa();
+            dfa.menu();
+            break;
+        default:
+            break;
+        }
+
+        if(option == 3) {
+            break;
+        }
+    }
+}
+
+
   void NotDeterministicFiniteAutomata:: readArchivo(string arch) {
 
     ifstream archivo(arch);
@@ -169,7 +244,7 @@ const int LAMBDA = 0;
   }
 
 map<pair<int,int>, set<int>> NotDeterministicFiniteAutomata:: getTransitionsWrite(){
-  
+
   map<pair<int,int>, set<int>> res;
   for(const auto&clave : this->getTransitions()) {
     for(const auto& elem :clave.second){
@@ -192,7 +267,7 @@ void NotDeterministicFiniteAutomata:: writeArchivo(string arch) {
   archivo << "inic[shape=point];\n" << std::endl;
   archivo << "inic->" << this->getInitialState()<< ";\n"<< std::endl;
   map<pair<int,int>, set<int>> res = this->getTransitionsWrite();
-  
+
   for(const auto&clave : res) {
     archivo << clave.first.first << "->" << clave.first.second <<" [label=\"";
     for(const auto& elem : clave.second) {
@@ -201,12 +276,12 @@ void NotDeterministicFiniteAutomata:: writeArchivo(string arch) {
       } else {
         archivo << elem << ", ";
       }
-    
+
     }
     archivo << "\"];" << std::endl;
 
   }
-  
+
   for(const auto& num : this->getFinalStates()) {
     archivo << "\n" << num << "[shape=doublecircle];" << std::endl;
   }

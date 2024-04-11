@@ -42,7 +42,8 @@ public:
 
     void readFile(std::string arch);
     void writeFile(std::string arch);
-    
+    void print();
+    void menu();
     bool pertenece(string s);
 private:
     vector<int> stringNum(std::string cad);
