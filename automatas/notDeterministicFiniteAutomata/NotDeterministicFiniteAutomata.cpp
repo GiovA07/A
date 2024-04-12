@@ -1,5 +1,6 @@
 #include "NotDeterministicFiniteAutomata.h"
-#include "../deterministicAutomata/DeterministicFiniteAutomata.cpp"
+
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -139,7 +140,7 @@ void NotDeterministicFiniteAutomata :: menu() {
             cin.ignore();
             cout << "Ingrese el nombre del archivo (sin .dot) para escribir el automata: ";
             getline(cin, nameFile);
-            writeArchivo("../archivos_automatas/" + nameFile + ".dot");
+            writeFile("../archivos_automatas/" + nameFile + ".dot");
             break;
         case 3:
             dfa = ndafToDfa();
@@ -156,7 +157,7 @@ void NotDeterministicFiniteAutomata :: menu() {
 }
 
 
-  void NotDeterministicFiniteAutomata:: readArchivo(string arch) {
+  void NotDeterministicFiniteAutomata:: readFile(string arch) {
 
     ifstream archivo(arch);
 
@@ -256,7 +257,7 @@ map<pair<int,int>, set<int>> NotDeterministicFiniteAutomata:: getTransitionsWrit
 }
 
 
-void NotDeterministicFiniteAutomata:: writeArchivo(string arch) {
+void NotDeterministicFiniteAutomata:: writeFile(string arch) {
   std::ofstream archivo(arch);
   if(!archivo.is_open()) {
     cerr << "Error al abrir el archivo" << endl;

@@ -42,8 +42,8 @@ public:
     void addFinalState(int state);
     void addNewElementAlphabet(int element);
     set<int> getTransitionStates(pair<int, int> key);
-    void readArchivo(string arch);
-    void writeArchivo(string arch);
+    void readFile(string arch);
+    void writeFile(string arch);
     void print();
     void menu();
 

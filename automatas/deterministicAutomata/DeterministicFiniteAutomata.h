@@ -6,7 +6,6 @@
 #include <set>
 #include <utility> // Para std::pair
 #include <string>
-
 using namespace std;
 
 class DeterministicFiniteAutomata {

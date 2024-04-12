@@ -4,6 +4,8 @@
 #include <string>
 #include <regex>
 
+using namespace std;
+
 DeterministicFiniteAutomata :: DeterministicFiniteAutomata() : k(), alphabet(), transitions(), q0(), f() {
 }
 
