@@ -28,13 +28,13 @@ int main() {
         if (typeAutomata == 1) {
 
             NotDeterministicFiniteAutomata ndfa;
-            ndfa.readFile("../archivos_automatas/" + nameFile + ".dot");
+            ndfa.readFile("../automataExamples/" + nameFile + ".dot");
             ndfa.menu();
 
         }else{
 
             DeterministicFiniteAutomata dfa;
-            dfa.readFile("../archivos_automatas/" + nameFile + ".dot");
+            dfa.readFile("../automataExamples/" + nameFile + ".dot");
             dfa.menu();
         }
   }
