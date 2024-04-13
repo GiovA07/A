@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "../automatas/notDeterministicFiniteAutomata/NotDeterministicFiniteAutomata.h"
-#include "../automatas/deterministicAutomata/DeterministicFiniteAutomata.h"
+#include "../automatas/notDeterministicFiniteAutomata/NotDeterministicFiniteAutomata.cpp"
+#include "../automatas/deterministicAutomata/DeterministicFiniteAutomata.cpp"
 
 #include "string"
 using namespace std;

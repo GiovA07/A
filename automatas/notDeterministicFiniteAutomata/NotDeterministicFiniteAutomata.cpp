@@ -140,7 +140,7 @@ void NotDeterministicFiniteAutomata :: menu() {
             cin.ignore();
             cout << "Ingrese el nombre del archivo (sin .dot) para escribir el automata: ";
             getline(cin, nameFile);
-            writeFile("../archivos_automatas/" + nameFile + ".dot");
+            writeFile("../automataExamples/" + nameFile + ".dot");
             break;
         case 3:
             dfa = ndafToDfa();
