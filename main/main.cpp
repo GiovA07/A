@@ -12,7 +12,7 @@ int main() {
   string nameFile;
   int typeAutomata;
   while (true) {
-        cout << "¿Que Automata Quiere Cargar? 1-No Deterministico 2-Deterministico: ";
+        cout << "Que Automata Quiere Cargar? \n 1-No Deterministico \n 2-Deterministico \n Cualquier otro numero SALIR del PROGRAMA \n Ingresa el numero:  ";
         cin >> typeAutomata;
 
         if (typeAutomata != 1 && typeAutomata != 2) {
@@ -28,13 +28,13 @@ int main() {
         if (typeAutomata == 1) {
 
             NotDeterministicFiniteAutomata ndfa;
-            ndfa.readFile("../automataExamples/" + nameFile + ".dot");
+            ndfa.readFile("../automataExamples/automataFND/" + nameFile + ".dot");
             ndfa.menu();
 
         }else{
 
             DeterministicFiniteAutomata dfa;
-            dfa.readFile("../automataExamples/" + nameFile + ".dot");
+            dfa.readFile("../automataExamples/automataFD/" + nameFile + ".dot");
             dfa.menu();
         }
   }

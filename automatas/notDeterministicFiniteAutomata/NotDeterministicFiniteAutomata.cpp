@@ -9,10 +9,10 @@
 using namespace std;
 
 const int LAMBDA = 0;
-
+  //constructor
   NotDeterministicFiniteAutomata :: NotDeterministicFiniteAutomata() : k(), alphabet(), transitions(), q0(0), f() {
   }
-
+  //getters
   set<int> NotDeterministicFiniteAutomata :: getK() {
       return k;
   }
@@ -35,6 +35,7 @@ const int LAMBDA = 0;
       return f;
   }
 
+  //setters
   void NotDeterministicFiniteAutomata :: setK(set<int> states) {
       this->k = states;
   }
@@ -54,7 +55,7 @@ const int LAMBDA = 0;
   void NotDeterministicFiniteAutomata :: setFinalState(set<int> f) {
       this->f = f;
   }
-
+  //functions
   void NotDeterministicFiniteAutomata :: addTransition(int q, int r, int destination){
     if (k.find(q) != k.end() && k.find(q) != k.end()){
       pair<int, int> path = {q, r};
@@ -93,27 +94,33 @@ const int LAMBDA = 0;
 
 
     for(const auto& elem: f) {
-        cout << "El/Los Estados Finales son: " << elem << std::endl;
+        cout << "El/Los Estados Finales son: " << elem <<endl;
     }
 
-    if (transitions.empty()) {
-        std::cout << "No Existe Ninguna Transicion" << std::endl;
-    } else {
-        // Iterar sobre el mapa e imprimir cada par clave-valor
-        for (const auto& par : transitions) {
-            // Imprimir la clave (un par)
-            //for(const auto& est :par.first.second) {
-              std::cout << "((" << par.first.first << ", " << par.first.second << ")";
-            //}
-            // Imprimir el conjunto de valores
-            //std::cout << "Valores:";
-            for (const auto& valor : par.second) {
-                std::cout << " " << valor << ")";
-            }
-            std::cout << std::endl;
-        }
-    }
+  // Copia del mapa original "transitions"
+  map<pair<int, int>, set<int>> miMapa = transitions;
+  if (transitions.empty()) {
+        std::cout << "No Existe Ninguna Transicion" <<endl;
+  } else {
+      cout << "Las transiciones son: "<< endl;
+      for (const auto& pair : miMapa) {
+          const auto& state = pair.first;
+          const auto& stateFinal = pair.second;
 
+          // Imprimir la clave
+          std::cout << "State: {" << state.first << "}" << " by: " << state.second;
+
+          // Imprimir los valores
+          std::cout << " => {";
+          for (auto it = stateFinal.begin(); it != stateFinal.end(); ++it) {
+              std::cout << *it;
+              if (std::next(it) != stateFinal.end()) {
+                  std::cout << ", ";
+              }
+          }
+          std::cout << "}\n";
+      }
+  }
 }
 
 void NotDeterministicFiniteAutomata :: menu() {
@@ -124,7 +131,7 @@ void NotDeterministicFiniteAutomata :: menu() {
         cout << "1- Mostrarlo por pantalla.\n";
         cout << "2- Escribirlo en un archivo.\n";
         cout << "3- Tranformarlo en Deterministico.\n";
-        cout << "Cualquier otro numero SALIR.\n";
+        cout << "Cualquier otro numero VOLVER.\n";
         cout << "Ingresa el numero: ";
         cin >> option;
         if (option != 1 && option != 2 && option != 3) {
@@ -140,7 +147,7 @@ void NotDeterministicFiniteAutomata :: menu() {
             cin.ignore();
             cout << "Ingrese el nombre del archivo (sin .dot) para escribir el automata: ";
             getline(cin, nameFile);
-            writeFile("../automataExamples/" + nameFile + ".dot");
+            writeFile("../automataExamples/automataFND/" + nameFile + ".dot");
             break;
         case 3:
             dfa = ndafToDfa();

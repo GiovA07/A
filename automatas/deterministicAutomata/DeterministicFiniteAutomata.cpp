@@ -120,14 +120,13 @@ void DeterministicFiniteAutomata :: print() {
 
     cout << "Las transiciones son: " << endl;
     map<pair<set<int>, int>, set<int>> miMapa = transitions;
-    // Recorrer el mapa y mostrar cada elemento
-    for (const auto& elemento : miMapa) {
-        cout << "Clave: {";
-        for (int num : elemento.first.first) {
+    for (const auto& element : miMapa) {
+        cout << "State: {";
+        for (int num : element.first.first) {
             cout << num << " ";
         }
-        cout << "}, " << elemento.first.second << " => {";
-        for (int num : elemento.second) {
+        cout << "}, by: " << element.first.second << " => {";
+        for (int num : element.second) {
             cout << num << " ";
         }
         cout << "}" << endl;
@@ -141,7 +140,7 @@ void DeterministicFiniteAutomata :: menu() {
         cout << "Que Quieres Hacer?.\n";
         cout << "1- Mostrarlo por pantalla.\n";
         cout << "2- Escribirlo en un archivo.\n";
-        cout << "Cualquier otro numero SALIR.\n";
+        cout << "Cualquier otro numero VOLVER.\n";
         cout << "Ingresa el numero: ";
         cin >> option;
         if (option != 1 && option != 2) {
@@ -157,7 +156,7 @@ void DeterministicFiniteAutomata :: menu() {
             cin.ignore();
             cout << "Ingrese el nombre del archivo (sin .dot) para escribir el automata: ";
             getline(cin, nameFile);
-            writeFile("../automataExamples/" + nameFile + ".dot");
+            writeFile("../automataExamples/automataFD/" + nameFile + ".dot");
             break;
         default:
             break;
