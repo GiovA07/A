@@ -131,12 +131,15 @@ void NotDeterministicFiniteAutomata :: menu() {
         cout << "1- Mostrarlo por pantalla.\n";
         cout << "2- Escribirlo en un archivo.\n";
         cout << "3- Tranformarlo en Deterministico.\n";
+        cout << "4- Unirlo a otro automata No Deterministico.\n";
         cout << "Cualquier otro numero VOLVER.\n";
         cout << "Ingresa el numero: ";
         cin >> option;
-        if (option != 1 && option != 2 && option != 3) {
+        if (option != 1 && option != 2 && option != 3 && option!= 4) {
             break;
         }
+        NotDeterministicFiniteAutomata ndfa2;
+        set<int> set;
         DeterministicFiniteAutomata dfa;
         switch (option)
         {
@@ -153,6 +156,12 @@ void NotDeterministicFiniteAutomata :: menu() {
             dfa = ndafToDfa();
             dfa.menu();
             break;
+        case 4:
+            cin.ignore();
+            cout << "Ingrese el nombre del archivo (sin .dot) para unirlo al automata: ";
+            getline(cin, nameFile);
+            ndfa2.readFile("../automataExamples/automataFND/" + nameFile + ".dot");
+
         default:
             break;
         }
@@ -406,3 +415,67 @@ DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
 
     return dfa;
 }
+
+NotDeterministicFiniteAutomata NotDeterministicFiniteAutomata::unionAFDWithAFD(NotDeterministicFiniteAutomata AFND1, NotDeterministicFiniteAutomata AFND2) {
+  NotDeterministicFiniteAutomata AFNDresult;
+  //Union States
+  set<int> newK = unionSets(AFND1.getK(), AFND2.getK());
+  int newInit = 77; //TODO: podemos ver que no exista en el K para que sea el nuevo init
+  AFNDresult.setInitialState(newInit);
+  newK.insert(newInit);
+  AFNDresult.setK(newK);
+  //Union Alphabet
+  AFNDresult.setAlphabet(unionSets(AFND1.getAlphabet(), AFND2.getAlphabet()));
+  //New transitions
+  AFNDresult.setTransitions(unionTransitions(AFND1.getTransitions(), AFND2.getTransitions()));
+  AFNDresult.addTransition(newInit, LAMBDA, AFND1.getInitialState());
+  AFNDresult.addTransition(newInit, LAMBDA, AFND2.getInitialState());
+
+  int newFinalState = 777;
+  set<int> finalState;
+  finalState.insert(newFinalState);
+  AFNDresult.setFinalState(finalState);
+
+  for (int state : AFND1.getFinalStates()) {
+    AFNDresult.addTransition(state, LAMBDA, newFinalState);
+  }
+  for (int state : AFND2.getFinalStates()) {
+    AFNDresult.addTransition(state, LAMBDA, newFinalState);
+  }
+  return AFNDresult;
+}
+
+set<int> NotDeterministicFiniteAutomata :: unionSets(set<int> a1, set<int> a2) {
+    set<int> unionSet;
+    for (int simbol : a1) {
+        unionSet.insert(simbol);
+    }
+    for (int simbol : a2) {
+        unionSet.insert(simbol);
+    }
+    return unionSet;
+}
+
+map<pair<int,int>, set<int>> NotDeterministicFiniteAutomata:: unionTransitions(map<pair<int,int>, set<int>> trans1, map<pair<int,int>, set<int>> trans2) {
+      std::map<std::pair<int, int>, std::set<int>> resultMap;
+
+    for (const auto& pair : trans1) {
+        const auto& key = pair.first;
+        const auto& set1 = pair.second;
+        resultMap[key] = set1;
+    }
+
+    for (const auto& pair : trans2) {
+        const auto& key = pair.first;
+        const auto& set2 = pair.second;
+
+        if (resultMap.find(key) != resultMap.end()) {
+            resultMap[key] = unionSets(resultMap[key], set2);
+        } else {
+            resultMap[key] = set2;
+        }
+    }
+
+    return resultMap;
+}
+

@@ -47,6 +47,13 @@ public:
     void print();
     void menu();
 
+    //FND U FND
+    NotDeterministicFiniteAutomata unionAFDWithAFD(NotDeterministicFiniteAutomata AFND1, NotDeterministicFiniteAutomata AFND2);
+    set<int> unionSets(set<int> a1, set<int> a2);
+    map<pair<int,int>, set<int>> unionTransitions(map<pair<int,int>, set<int>> trans1, map<pair<int,int>, set<int>> trans2);
+
+
+
     DeterministicFiniteAutomata ndafToDfa();
 
 private:

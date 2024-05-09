@@ -8,9 +8,9 @@ using namespace std;
 
 
 int main() {
-
   string nameFile;
   int typeAutomata;
+
   while (true) {
         cout << "Que Automata Quiere Cargar? \n 1-No Deterministico \n 2-Deterministico \n Cualquier otro numero SALIR del PROGRAMA \n Ingresa el numero:  ";
         cin >> typeAutomata;
