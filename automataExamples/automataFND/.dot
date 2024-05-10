@@ -19,9 +19,8 @@ inic->1;
 9->11 [label="13"];
 10->12 [label="13"];
 11->11 [label="13, 14"];
-11->7777 [label="0"];
-12->7777 [label="0"];
-777->8 [label="0"];
+11->777 [label="0"];
+12->777 [label="0"];
 
-7777[shape=doublecircle];
+777[shape=doublecircle];
 }

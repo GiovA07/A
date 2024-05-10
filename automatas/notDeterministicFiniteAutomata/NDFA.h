@@ -13,7 +13,7 @@
 
 using namespace std;
 
-class NotDeterministicFiniteAutomata : public InterfaceFiniteAutomata {
+class NDFA : public InterfaceFiniteAutomata {
 private:
     set<int> k;                                     //Estados que hay en el automata
     set<int> alphabet;                              //el alfabeto
@@ -22,7 +22,7 @@ private:
     set<int> f;                                     //estados finales
 
 public:
-    NotDeterministicFiniteAutomata();
+    NDFA();
     //geters
     set<int> getK();
     set<int> getAlphabet();
@@ -48,8 +48,8 @@ public:
     void menu();
 
     //FND U FND
-    NotDeterministicFiniteAutomata unionAFDWithAFD(NotDeterministicFiniteAutomata AFND1, NotDeterministicFiniteAutomata AFND2);
-    NotDeterministicFiniteAutomata concatAFND(NotDeterministicFiniteAutomata AFND1, NotDeterministicFiniteAutomata AFND2);
+    NDFA unionAFDWithAFD(NDFA AFND1, NDFA AFND2);
+    NDFA concatAFND(NDFA AFND1, NDFA AFND2);
 
     set<int> unionSets(set<int> a1, set<int> a2);
     map<pair<int,int>, set<int>> unionTransitions(map<pair<int,int>, set<int>> trans1, map<pair<int,int>, set<int>> trans2);

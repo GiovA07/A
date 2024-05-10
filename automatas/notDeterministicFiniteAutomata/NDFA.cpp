@@ -1,4 +1,4 @@
-#include "NotDeterministicFiniteAutomata.h"
+#include "NDFA.h"
 
 
 #include <iostream>
@@ -10,72 +10,72 @@ using namespace std;
 
 const int LAMBDA = 0;
   //constructor
-  NotDeterministicFiniteAutomata :: NotDeterministicFiniteAutomata() : k(), alphabet(), transitions(), q0(0), f() {
+  NDFA :: NDFA() : k(), alphabet(), transitions(), q0(0), f() {
   }
   //getters
-  set<int> NotDeterministicFiniteAutomata :: getK() {
+  set<int> NDFA :: getK() {
       return k;
   }
 
-  set<int> NotDeterministicFiniteAutomata :: getAlphabet() {
+  set<int> NDFA :: getAlphabet() {
       return alphabet;
   }
 
-  map<pair<int,int>, set<int>> NotDeterministicFiniteAutomata :: getTransitions() {
+  map<pair<int,int>, set<int>> NDFA :: getTransitions() {
     return transitions;
   }
 
 
-  int NotDeterministicFiniteAutomata :: getInitialState() {
+  int NDFA :: getInitialState() {
       return q0;
   }
 
 
-  set<int> NotDeterministicFiniteAutomata :: getFinalStates() {
+  set<int> NDFA :: getFinalStates() {
       return f;
   }
 
   //setters
-  void NotDeterministicFiniteAutomata :: setK(set<int> states) {
+  void NDFA :: setK(set<int> states) {
       this->k = states;
   }
 
-  void NotDeterministicFiniteAutomata :: setAlphabet(set<int> alphabet) {
+  void NDFA :: setAlphabet(set<int> alphabet) {
       this->alphabet = alphabet;
   }
 
-  void NotDeterministicFiniteAutomata :: setTransitions(map<pair<int,int>, set<int>> transitions) {
+  void NDFA :: setTransitions(map<pair<int,int>, set<int>> transitions) {
       this->transitions = transitions;
   }
 
-  void NotDeterministicFiniteAutomata :: setInitialState(int q0) {
+  void NDFA :: setInitialState(int q0) {
       this->q0 = q0;
   }
 
-  void NotDeterministicFiniteAutomata :: setFinalState(set<int> f) {
+  void NDFA :: setFinalState(set<int> f) {
       this->f = f;
   }
   //functions
-  void NotDeterministicFiniteAutomata :: addTransition(int q, int r, int destination){
+  void NDFA :: addTransition(int q, int r, int destination){
     if (k.find(q) != k.end() && k.find(q) != k.end()){
       pair<int, int> path = {q, r};
       transitions[path].insert(destination);
     } //SINO EXCEPCION...
   }
 
-  void NotDeterministicFiniteAutomata :: addState(int state){
+  void NDFA :: addState(int state){
     this->k.insert(state);
   }
 
-  void NotDeterministicFiniteAutomata :: addFinalState(int state){
+  void NDFA :: addFinalState(int state){
     this->f.insert(state);
   }
 
-  void NotDeterministicFiniteAutomata :: addNewElementAlphabet(int element) {
+  void NDFA :: addNewElementAlphabet(int element) {
     this->alphabet.insert(element);
   }
 
-  set<int> NotDeterministicFiniteAutomata :: getTransitionStates(pair<int,int> key) {
+  set<int> NDFA :: getTransitionStates(pair<int,int> key) {
     if (this->transitions.find(key) != this->transitions.end()) { //la transicion existe en el map?
         return transitions[key];
     } else {
@@ -83,7 +83,7 @@ const int LAMBDA = 0;
     }
   }
 
-  void NotDeterministicFiniteAutomata :: print() {
+  void NDFA :: print() {
     cout << "El Estado inicial es: " << q0 << std::endl;
 
     cout << "El alfabeto es: {";
@@ -123,7 +123,7 @@ const int LAMBDA = 0;
   }
 }
 
-void NotDeterministicFiniteAutomata :: menu() {
+void NDFA :: menu() {
     while(true) {
         string nameFile;
         int option;
@@ -132,14 +132,15 @@ void NotDeterministicFiniteAutomata :: menu() {
         cout << "2- Escribirlo en un archivo.\n";
         cout << "3- Tranformarlo en Deterministico.\n";
         cout << "4- Unirlo a otro automata No Deterministico.\n";
+        cout << "5- Concatenar con otro automata.\n";
         cout << "Cualquier otro numero VOLVER.\n";
         cout << "Ingresa el numero: ";
         cin >> option;
-        if (option != 1 && option != 2 && option != 3 && option!= 4) {
+        if (option < 1 || option > 5) {
             break;
         }
-        NotDeterministicFiniteAutomata ndfa2;
-        NotDeterministicFiniteAutomata ndfaUnion;
+        NDFA ndfa2;
+        NDFA newNDFA;
         set<int> set;
         DeterministicFiniteAutomata dfa;
         switch (option)
@@ -162,20 +163,28 @@ void NotDeterministicFiniteAutomata :: menu() {
             cout << "Ingrese el nombre del archivo (sin .dot) para unirlo al automata: ";
             getline(cin, nameFile);
             ndfa2.readFile("../automataExamples/automataFND/" + nameFile + ".dot");
-            ndfaUnion = unionAFDWithAFD(*this, ndfa2);
-            ndfaUnion.menu();
+            newNDFA = unionAFDWithAFD(*this, ndfa2);
+            newNDFA.menu();
+            break;
+        case 5:
+            cin.ignore();
+            cout << "Ingrese el nombre del archivo (sin .dot) para concatenarlo: ";
+            getline(cin, nameFile);
+            ndfa2.readFile("../automataExamples/automataFND/" + nameFile + ".dot");
+            newNDFA = concatAFND(*this, ndfa2);
+            newNDFA.menu();
         default:
             break;
         }
 
-        if(option == 3) {
+        if(option == 3 || option == 4 || option == 5) {
             break;
         }
     }
 }
 
 
-  void NotDeterministicFiniteAutomata:: readFile(string arch) {
+  void NDFA:: readFile(string arch) {
 
     ifstream archivo(arch);
 
@@ -262,7 +271,7 @@ void NotDeterministicFiniteAutomata :: menu() {
     archivo.close();
   }
 
-map<pair<int,int>, set<int>> NotDeterministicFiniteAutomata:: getTransitionsWrite(){
+map<pair<int,int>, set<int>> NDFA:: getTransitionsWrite(){
 
   map<pair<int,int>, set<int>> res;
   for(const auto&clave : this->getTransitions()) {
@@ -275,7 +284,7 @@ map<pair<int,int>, set<int>> NotDeterministicFiniteAutomata:: getTransitionsWrit
 }
 
 
-void NotDeterministicFiniteAutomata:: writeFile(string arch) {
+void NDFA:: writeFile(string arch) {
   std::ofstream archivo(arch);
   if(!archivo.is_open()) {
     cerr << "Error al abrir el archivo" << endl;
@@ -312,7 +321,7 @@ void NotDeterministicFiniteAutomata:: writeFile(string arch) {
 
 
 
-set<int> NotDeterministicFiniteAutomata :: lambdaClausure(set<int> state) {
+set<int> NDFA :: lambdaClausure(set<int> state) {
     set<int> result;
     set<int> states_not_visited = state;
     set<int> states_visited;
@@ -338,7 +347,7 @@ set<int> NotDeterministicFiniteAutomata :: lambdaClausure(set<int> state) {
 }
 
 
-set<int> NotDeterministicFiniteAutomata :: move(set<int> conjState, int element) {
+set<int> NDFA :: move(set<int> conjState, int element) {
     set<int> result;
 
     for (int state : conjState) {
@@ -355,7 +364,7 @@ set<int> NotDeterministicFiniteAutomata :: move(set<int> conjState, int element)
 }
 
 
-DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
+DeterministicFiniteAutomata NDFA :: ndafToDfa() {
     DeterministicFiniteAutomata dfa;
 
     //otorgandole el alfabeto
@@ -418,8 +427,8 @@ DeterministicFiniteAutomata NotDeterministicFiniteAutomata :: ndafToDfa() {
     return dfa;
 }
 
-NotDeterministicFiniteAutomata NotDeterministicFiniteAutomata::unionAFDWithAFD(NotDeterministicFiniteAutomata AFND1, NotDeterministicFiniteAutomata AFND2) {
-  NotDeterministicFiniteAutomata AFNDresult;
+NDFA NDFA::unionAFDWithAFD(NDFA AFND1, NDFA AFND2) {
+  NDFA AFNDresult;
   //Union States
   set<int> newK = unionSets(AFND1.getK(), AFND2.getK());
   int newInit = 77; //TODO: podemos ver que no exista en el K para que sea el nuevo init
@@ -447,8 +456,8 @@ NotDeterministicFiniteAutomata NotDeterministicFiniteAutomata::unionAFDWithAFD(N
   return AFNDresult;
 }
 
-NotDeterministicFiniteAutomata NotDeterministicFiniteAutomata::concatAFND(NotDeterministicFiniteAutomata AFND1, NotDeterministicFiniteAutomata AFND2) {
-  NotDeterministicFiniteAutomata AFNDresult;
+NDFA NDFA::concatAFND(NDFA AFND1, NDFA AFND2) {
+  NDFA AFNDresult;
   //Union States
   set<int> newK = unionSets(AFND1.getK(), AFND2.getK());
   AFNDresult.setInitialState(AFND1.getInitialState());
@@ -459,6 +468,8 @@ NotDeterministicFiniteAutomata NotDeterministicFiniteAutomata::concatAFND(NotDet
   AFNDresult.setTransitions(unionTransitions(AFND1.getTransitions(), AFND2.getTransitions()));
 
   int intermedioState = 777;
+  AFNDresult.addState(intermedioState);
+
   for (int state : AFND1.getFinalStates()) {
     AFNDresult.addTransition(state, LAMBDA, intermedioState);
   }
@@ -466,10 +477,9 @@ NotDeterministicFiniteAutomata NotDeterministicFiniteAutomata::concatAFND(NotDet
   //Del Intermedio Agrego una transicion a el inicial del 2do
   AFNDresult.addTransition(intermedioState, LAMBDA, AFND2.getInitialState());
 
-  int newFinalState = 777;
-  set<int> finalState;
-  finalState.insert(newFinalState);
-  AFNDresult.setFinalState(finalState);
+  int newFinalState = 7777;
+  AFNDresult.addState(newFinalState);
+  AFNDresult.addFinalState(newFinalState);
 
   for (int state : AFND2.getFinalStates()) {
     AFNDresult.addTransition(state, LAMBDA, newFinalState);
@@ -478,7 +488,7 @@ NotDeterministicFiniteAutomata NotDeterministicFiniteAutomata::concatAFND(NotDet
 }
 
 
-set<int> NotDeterministicFiniteAutomata :: unionSets(set<int> a1, set<int> a2) {
+set<int> NDFA :: unionSets(set<int> a1, set<int> a2) {
     set<int> unionSet;
     for (int simbol : a1) {
         unionSet.insert(simbol);
@@ -489,7 +499,7 @@ set<int> NotDeterministicFiniteAutomata :: unionSets(set<int> a1, set<int> a2) {
     return unionSet;
 }
 
-map<pair<int,int>, set<int>> NotDeterministicFiniteAutomata:: unionTransitions(map<pair<int,int>, set<int>> trans1, map<pair<int,int>, set<int>> trans2) {
+map<pair<int,int>, set<int>> NDFA:: unionTransitions(map<pair<int,int>, set<int>> trans1, map<pair<int,int>, set<int>> trans2) {
       std::map<std::pair<int, int>, std::set<int>> resultMap;
 
     for (const auto& pair : trans1) {

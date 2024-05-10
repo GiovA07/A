@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../automatas/notDeterministicFiniteAutomata/NotDeterministicFiniteAutomata.cpp"
+#include "../automatas/notDeterministicFiniteAutomata/NDFA.cpp"
 #include "../automatas/deterministicAutomata/DeterministicFiniteAutomata.cpp"
 
 #include "string"
@@ -27,7 +27,7 @@ int main() {
 
         if (typeAutomata == 1) {
 
-            NotDeterministicFiniteAutomata ndfa;
+            NDFA ndfa;
             ndfa.readFile("../automataExamples/automataFND/" + nameFile + ".dot");
             ndfa.menu();
 
