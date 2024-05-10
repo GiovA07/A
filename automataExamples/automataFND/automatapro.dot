@@ -1,0 +1,28 @@
+digraph{
+
+rankdir=LR;
+inic[shape=point];
+
+inic->77;
+
+1->2 [label="7"];
+1->3 [label="0, 7"];
+2->2 [label="6"];
+2->3 [label="6"];
+2->777 [label="0"];
+3->3 [label="7"];
+3->4 [label="0"];
+3->5 [label="0"];
+5->3 [label="6"];
+8->9 [label="12"];
+8->10 [label="12"];
+9->11 [label="12"];
+10->12 [label="12"];
+11->11 [label="12, 13"];
+11->777 [label="0"];
+12->777 [label="0"];
+77->1 [label="0"];
+77->8 [label="0"];
+
+777[shape=doublecircle];
+}

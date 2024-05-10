@@ -139,6 +139,7 @@ void NotDeterministicFiniteAutomata :: menu() {
             break;
         }
         NotDeterministicFiniteAutomata ndfa2;
+        NotDeterministicFiniteAutomata ndfaUnion;
         set<int> set;
         DeterministicFiniteAutomata dfa;
         switch (option)
@@ -161,7 +162,8 @@ void NotDeterministicFiniteAutomata :: menu() {
             cout << "Ingrese el nombre del archivo (sin .dot) para unirlo al automata: ";
             getline(cin, nameFile);
             ndfa2.readFile("../automataExamples/automataFND/" + nameFile + ".dot");
-
+            ndfaUnion = unionAFDWithAFD(*this, ndfa2);
+            ndfaUnion.menu();
         default:
             break;
         }
@@ -444,6 +446,37 @@ NotDeterministicFiniteAutomata NotDeterministicFiniteAutomata::unionAFDWithAFD(N
   }
   return AFNDresult;
 }
+
+NotDeterministicFiniteAutomata NotDeterministicFiniteAutomata::concatAFND(NotDeterministicFiniteAutomata AFND1, NotDeterministicFiniteAutomata AFND2) {
+  NotDeterministicFiniteAutomata AFNDresult;
+  //Union States
+  set<int> newK = unionSets(AFND1.getK(), AFND2.getK());
+  AFNDresult.setInitialState(AFND1.getInitialState());
+  AFNDresult.setK(newK);
+  //Union Alphabet
+  AFNDresult.setAlphabet(unionSets(AFND1.getAlphabet(), AFND2.getAlphabet()));
+  //New transitions
+  AFNDresult.setTransitions(unionTransitions(AFND1.getTransitions(), AFND2.getTransitions()));
+
+  int intermedioState = 777;
+  for (int state : AFND1.getFinalStates()) {
+    AFNDresult.addTransition(state, LAMBDA, intermedioState);
+  }
+
+  //Del Intermedio Agrego una transicion a el inicial del 2do
+  AFNDresult.addTransition(intermedioState, LAMBDA, AFND2.getInitialState());
+
+  int newFinalState = 777;
+  set<int> finalState;
+  finalState.insert(newFinalState);
+  AFNDresult.setFinalState(finalState);
+
+  for (int state : AFND2.getFinalStates()) {
+    AFNDresult.addTransition(state, LAMBDA, newFinalState);
+  }
+  return AFNDresult;
+}
+
 
 set<int> NotDeterministicFiniteAutomata :: unionSets(set<int> a1, set<int> a2) {
     set<int> unionSet;
