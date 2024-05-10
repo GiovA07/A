@@ -50,6 +50,7 @@ public:
     //FND U FND
     NDFA unionAFDWithAFD(NDFA AFND1, NDFA AFND2);
     NDFA concatAFND(NDFA AFND1, NDFA AFND2);
+    NDFA clausuKlenneAFND(NDFA AFND1);
 
     set<int> unionSets(set<int> a1, set<int> a2);
     map<pair<int,int>, set<int>> unionTransitions(map<pair<int,int>, set<int>> trans1, map<pair<int,int>, set<int>> trans2);

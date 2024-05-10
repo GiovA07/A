@@ -133,10 +133,11 @@ void NDFA :: menu() {
         cout << "3- Tranformarlo en Deterministico.\n";
         cout << "4- Unirlo a otro automata No Deterministico.\n";
         cout << "5- Concatenar con otro automata.\n";
+        cout << "6- Aplicar Clausura Klenne al automata.\n";
         cout << "Cualquier otro numero VOLVER.\n";
         cout << "Ingresa el numero: ";
         cin >> option;
-        if (option < 1 || option > 5) {
+        if (option < 1 || option > 6) {
             break;
         }
         NDFA ndfa2;
@@ -172,6 +173,9 @@ void NDFA :: menu() {
             getline(cin, nameFile);
             ndfa2.readFile("../automataExamples/automataFND/" + nameFile + ".dot");
             newNDFA = concatAFND(*this, ndfa2);
+            newNDFA.menu();
+        case 6:
+            newNDFA = clausuKlenneAFND(*this);
             newNDFA.menu();
         default:
             break;
@@ -487,6 +491,26 @@ NDFA NDFA::concatAFND(NDFA AFND1, NDFA AFND2) {
   return AFNDresult;
 }
 
+NDFA NDFA::clausuKlenneAFND(NDFA AFND1) {
+  NDFA AFNDresult = AFND1;
+  //The new Initial state 
+  int newInit = 777;
+  AFNDresult.setInitialState(newInit);
+  AFNDresult.addState(newInit);
+  AFNDresult.addTransition(newInit, LAMBDA, AFND1.getInitialState());
+  //The new final state
+  int newFinalState = 7777;
+  set<int> finalState;
+  finalState.insert(newFinalState);
+  AFNDresult.addState(newFinalState);
+  AFNDresult.setFinalState(finalState);
+  for (int state : AFND1.getFinalStates()) {
+    AFNDresult.addTransition(state, LAMBDA, newFinalState);
+  }
+  AFNDresult.addTransition(newInit, LAMBDA,newFinalState);
+  AFNDresult.addTransition(newFinalState, LAMBDA,newInit);
+  return AFNDresult;
+}
 
 set<int> NDFA :: unionSets(set<int> a1, set<int> a2) {
     set<int> unionSet;
