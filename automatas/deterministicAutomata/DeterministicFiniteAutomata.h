@@ -47,6 +47,7 @@ public:
     DeterministicFiniteAutomata minimzation(DeterministicFiniteAutomata AFD1);
     void printEstados(set<set<set<int>>> aux);
 private:
+    bool perteneceConjunto(set<int> conj1, set<int> conj2);
     set<set<set<int>>> partition(DeterministicFiniteAutomata AFD1);
     vector<int> stringNum(std::string cad);
     map<pair<set<int>,set<int>>, set<int>> getTransitionsWrite();

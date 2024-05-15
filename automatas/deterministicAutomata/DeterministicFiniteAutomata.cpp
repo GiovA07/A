@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <regex>
+#include <vector>
 
 using namespace std;
 
@@ -208,7 +209,6 @@ void DeterministicFiniteAutomata ::menu()
       break;
     case 3:
       aux = partition(*this);
-      printEstados(aux);
     default:
       break;
     }
@@ -455,71 +455,128 @@ map<pair<set<int>, set<int>>, set<int>> DeterministicFiniteAutomata ::getTransit
   return res;
 }
 
-set<set<set<int>>> DeterministicFiniteAutomata ::partition(DeterministicFiniteAutomata AFD1)
-{
+//testWriteFile
+set<set<set<int>>> DeterministicFiniteAutomata ::partition(DeterministicFiniteAutomata AFD1){
   // llevo la particion de estados inales y no finales
   DeterministicFiniteAutomata resultado;
   set<set<set<int>>> P, Pprisma;
   set<set<int>> X, Xprisma;
   set<set<int>> auxiliar;
+
   bool cambioPartition;
-
-  // inserto elementos finales
   P.insert(AFD1.getFinalStates());
-
-  for (set<int> elem : AFD1.getK())
-  {
-    if (AFD1.getFinalStates().find(elem) == AFD1.getFinalStates().end())
-    {
+  for (set<int> elem : AFD1.getK()) {
+    bool aux = false; 
+    // recorro los posibles conjuntos finales
+    for(set<int> conj : AFD1.getFinalStates()) {      
+     aux = aux || perteneceConjunto(elem, conj);
+    }      
+    if(!aux) {
       auxiliar.insert(elem);
     }
   }
   // inserto elementos que no son finales
   P.insert(auxiliar);
-  // Pprisma.clear();
+  /*for (set<set<int>> finalState : P){
+    cout << "conj:" << endl;
+    for (set<int> state : finalState){
+      cout << "SubConjunto" << endl;
+      for (int elem : state){
+        cout << elem << endl;
+      }
+    }
+  }*/
+  //Pprisma.clear();
   cambioPartition = false;
 
   while (!cambioPartition)
   {
     Pprisma = P;
 
-    for (set<set<int>> X : P)
-    {
-      for (set<int> e : X)
-      {
+    for (set<set<int>> X : P) {
+      for (set<int> e : X) {
         // si no lo encuentro
-        if (Xprisma.find(e) == Xprisma.end())
-        {
+        // lo borro para simular marcacion
+        //X.erase(e);
+
+       /* bool valor = false;
+        for(set<int> xprim : Xprisma) {  
+          if (perteneceConjunto(e,xprim)) {
+            valor = valor || true;
+          }
+        }
+        // si encuntra que pertenece valor = true
+        // yo solo li inseto si valo = false
+        if(!valor) {
           Xprisma.insert(e);
         }
-
-        for (set<int> Eprisma : X)
-        {
-          if (e != Eprisma && equivalencia(e, Eprisma))
-          {
+        */
+        for (set<int> Eprisma : X) {
+          //e != Eprisma &&
+          if (e != Eprisma && equivalencia(e, Eprisma)) {
+            //guardo conjuntos equivalenes en xprisma
             Xprisma.insert(e);
           }
         }
-      }
 
-      if (X != Xprisma)
-      {
-        Pprisma.insert(Xprisma);
-        Xprisma.clear();
+        //NO VA 
+        //X = conjunto anterior {a,e,f}
+        //Xprisma = {e,f}
+      //  set<set<int>> aux3;
+      //  for (set<int> elem : X) {
+      //    bool aux = false; 
+      //    // recorro los posibles conjuntos finales
+      //    for(set<int> conj : Xprisma) {      
+      //      aux = aux || perteneceConjunto(elem, conj);
+      //    }      
+      //    if(!aux) {
+      //      aux3.insert(elem);
+      //    }
+      //  }
+        
+        if (X != Xprisma) {
+          
+          Pprisma.insert(Xprisma);
+          Xprisma.clear();
+        }
       }
     }
 
-    if (P != Pprisma)
-    {
+    if (P != Pprisma) {
       P = Pprisma;
-      Pprisma.clear();
     }
     else
     {
       cambioPartition = true;
     }
   }
+  for (set<set<int>> finalState : P){
+    for (set<int> state : finalState){
+      cout << "conj:" << endl;
+      for (int elem : state){
+        cout << elem << endl;
+      }
+    }
+  }
+
 }
+
+// retoorna false si no pertenece al conjunto;
+bool DeterministicFiniteAutomata ::perteneceConjunto(set<int> conj1, set<int> conj2) {
+  bool res = false;
+  if(conj1.size() == conj2.size()) {
+    res = true;
+    for(int num : conj1) {
+        if (conj2.find(num) != conj2.end()) {
+          res = res && true;
+        } else {
+          res = res && false;
+        }
+    }
+  }
+  return res;
+}
+
 
 bool DeterministicFiniteAutomata ::equivalencia(set<int> estado1, set<int> estado2)
 {
