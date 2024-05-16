@@ -187,11 +187,11 @@ void DeterministicFiniteAutomata ::menu()
     cout << "Que Quieres Hacer?.\n";
     cout << "1- Mostrarlo por pantalla.\n";
     cout << "2- Escribirlo en un archivo.\n";
-    cout << "3- Imprimir particiosn.\n";
+    cout << "3- Aplicar minimizacion al automata.\n";
     cout << "Cualquier otro numero VOLVER.\n";
     cout << "Ingresa el numero: ";
     cin >> option;
-    set<set<set<int>>> aux;
+    DeterministicFiniteAutomata AFD;
     if (option != 1 && option != 2 && option != 3)
     {
       break;
@@ -208,7 +208,8 @@ void DeterministicFiniteAutomata ::menu()
       writeFile("../automataExamples/automataFD/" + nameFile + ".dot");
       break;
     case 3:
-      aux = partition(*this);
+      AFD = partition(*this);
+      AFD.menu();
     default:
       break;
     }
@@ -456,7 +457,7 @@ map<pair<set<int>, set<int>>, set<int>> DeterministicFiniteAutomata ::getTransit
 }
 
 //testWriteFile
-set<set<set<int>>> DeterministicFiniteAutomata ::partition(DeterministicFiniteAutomata AFD1){
+DeterministicFiniteAutomata DeterministicFiniteAutomata ::partition(DeterministicFiniteAutomata AFD1){
   // llevo la particion de estados inales y no finales
   DeterministicFiniteAutomata resultado;
   set<set<set<int>>> P, Pprisma;
@@ -475,9 +476,114 @@ set<set<set<int>>> DeterministicFiniteAutomata ::partition(DeterministicFiniteAu
       auxiliar.insert(elem);
     }
   }
-  // inserto elementos que no son finales
+
   P.insert(auxiliar);
-  /*for (set<set<int>> finalState : P){
+  cambioPartition = false;
+  while (!cambioPartition) {
+    //Pprisma = P;
+    for (set<set<int>> X : P) {
+      for (set<int> e : X) {
+        Xprisma.insert(e);
+        for (set<int> Eprisma : X) {
+          if (e != Eprisma && equivalencia(e, Eprisma)) {
+            Xprisma.insert(Eprisma);
+          }
+
+        }
+        Pprisma.insert(Xprisma);
+        Xprisma.clear();
+      }
+    }
+    if (P != Pprisma) {
+      P = Pprisma;
+      Pprisma.clear();
+    } else {
+      cambioPartition = true;
+    }
+  }
+  set<set<int>> Pauxilia;
+  for(set<set<int>> el : P) {
+    Pauxilia.insert(*el.begin());
+  }
+  for(set<int> el : Pauxilia) {
+    resultado.addState(el);
+  }
+  
+  /*for (set<int> state : resultado.getK()){
+    cout << "Conjuntos" << endl;
+    for (int elem : state){
+      cout << elem << endl;
+    }
+  }*/
+
+  for(set<int> el : Pauxilia) {
+    if(perteneceConjunto(el,AFD1.getInitialState())) {
+      resultado.setInitialState(el);
+    }    
+  }
+
+  /*cout << "Estado inicial"<< endl;
+  for(int el : resultado.getInitialState()) {
+    cout << el << ",";
+  }
+  cout << endl;
+*/
+
+  for(set<int> el1 : Pauxilia) {
+      for(set<int> finallly : AFD1.getFinalStates()){
+        if(perteneceConjunto(el1,finallly)) {
+         resultado.addFinalState(el1);
+        }
+    }    
+  }
+
+  /*cout << "Estados Finales"<< endl;
+  for(set<int> el : resultado.getFinalStates()) {
+    cout << "congFinal"<< endl;
+    for (int finn : el) {
+      cout << finn << ",";
+    }
+    cout << endl;
+  }*/
+
+  // agarro los estados de mi Particion de estados
+  for (set<int> conjuntoEstado : Pauxilia) {
+    for (int simbolo : AFD1.getAlphabet()) {
+      // Obtenengo los alcanzables de mi nuvos estados
+      set<int> proxEstado = AFD1.getTransitionStates({conjuntoEstado, simbolo});
+      
+      // Verificar si los estados alcanzables están en algún conjunto de Pauxilia
+      for (set<set<int>> estadoDestino : P) {
+        for(set<int> ef : estadoDestino) {
+          if ((perteneceConjunto(proxEstado,ef))) {
+              // Agregar la transición al autómata resultado
+              resultado.addTransition(conjuntoEstado, simbolo, *estadoDestino.begin());
+          }
+        }
+      }
+    }
+  }
+
+  /*cout << "Las transiciones son: " << endl;
+  map<pair<set<int>, int>, set<int>> miMapa = resultado.getTransitions();
+  for (const auto &element : miMapa)
+  {
+    cout << "State: {";
+    for (int num : element.first.first)
+    {
+      cout << num << " ";
+    }
+    cout << "}, by: " << element.first.second << " => {";
+    for (int num : element.second)
+    {
+      cout << num << " ";
+    }
+    cout << "}" << endl;
+  }
+*/
+
+/*
+for (set<set<int>> finalState : P){
     cout << "conj:" << endl;
     for (set<int> state : finalState){
       cout << "SubConjunto" << endl;
@@ -486,79 +592,7 @@ set<set<set<int>>> DeterministicFiniteAutomata ::partition(DeterministicFiniteAu
       }
     }
   }*/
-  //Pprisma.clear();
-  cambioPartition = false;
-
-  while (!cambioPartition)
-  {
-    Pprisma = P;
-
-    for (set<set<int>> X : P) {
-      for (set<int> e : X) {
-        // si no lo encuentro
-        // lo borro para simular marcacion
-        //X.erase(e);
-
-       /* bool valor = false;
-        for(set<int> xprim : Xprisma) {  
-          if (perteneceConjunto(e,xprim)) {
-            valor = valor || true;
-          }
-        }
-        // si encuntra que pertenece valor = true
-        // yo solo li inseto si valo = false
-        if(!valor) {
-          Xprisma.insert(e);
-        }
-        */
-        for (set<int> Eprisma : X) {
-          //e != Eprisma &&
-          if (e != Eprisma && equivalencia(e, Eprisma)) {
-            //guardo conjuntos equivalenes en xprisma
-            Xprisma.insert(e);
-          }
-        }
-
-        //NO VA 
-        //X = conjunto anterior {a,e,f}
-        //Xprisma = {e,f}
-      //  set<set<int>> aux3;
-      //  for (set<int> elem : X) {
-      //    bool aux = false; 
-      //    // recorro los posibles conjuntos finales
-      //    for(set<int> conj : Xprisma) {      
-      //      aux = aux || perteneceConjunto(elem, conj);
-      //    }      
-      //    if(!aux) {
-      //      aux3.insert(elem);
-      //    }
-      //  }
-        
-        if (X != Xprisma) {
-          
-          Pprisma.insert(Xprisma);
-          Xprisma.clear();
-        }
-      }
-    }
-
-    if (P != Pprisma) {
-      P = Pprisma;
-    }
-    else
-    {
-      cambioPartition = true;
-    }
-  }
-  for (set<set<int>> finalState : P){
-    for (set<int> state : finalState){
-      cout << "conj:" << endl;
-      for (int elem : state){
-        cout << elem << endl;
-      }
-    }
-  }
-
+  return resultado;
 }
 
 // retoorna false si no pertenece al conjunto;
@@ -578,20 +612,17 @@ bool DeterministicFiniteAutomata ::perteneceConjunto(set<int> conj1, set<int> co
 }
 
 
-bool DeterministicFiniteAutomata ::equivalencia(set<int> estado1, set<int> estado2)
-{
-  for (int simbolo : this->getAlphabet())
-  {
+bool DeterministicFiniteAutomata ::equivalencia(set<int> estado1, set<int> estado2) {
+  for (int simbolo : this->getAlphabet()) {
     set<int> proxEstado1 = this->getTransitionStates({estado1, simbolo});
     set<int> proxEstado2 = this->getTransitionStates({estado2, simbolo});
-    if (proxEstado1 != proxEstado2)
-    {
+    if (proxEstado1 != proxEstado2) {
       return false;
     }
   }
   return true;
 }
-
+/*
 DeterministicFiniteAutomata DeterministicFiniteAutomata ::minimzation(DeterministicFiniteAutomata AFD1)
 {
   DeterministicFiniteAutomata resultMinimized;
@@ -631,7 +662,7 @@ DeterministicFiniteAutomata DeterministicFiniteAutomata ::minimzation(Determinis
               }
           }
     }
-  */
+  
 
   resultMinimized.setAlphabet(AFD1.getAlphabet());
 
@@ -659,7 +690,7 @@ DeterministicFiniteAutomata DeterministicFiniteAutomata ::minimzation(Determinis
   }
   resultMinimized.setInitialState(minimiq0);
 }
-
+*/
 bool DeterministicFiniteAutomata ::pertenece(string s)
 {
   set<int> alphabet = this->getAlphabet();

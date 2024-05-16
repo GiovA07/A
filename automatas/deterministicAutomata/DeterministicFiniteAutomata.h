@@ -45,10 +45,10 @@ public:
     void menu();
     bool pertenece(string s);
     DeterministicFiniteAutomata minimzation(DeterministicFiniteAutomata AFD1);
+    DeterministicFiniteAutomata partition(DeterministicFiniteAutomata AFD1);
     void printEstados(set<set<set<int>>> aux);
 private:
     bool perteneceConjunto(set<int> conj1, set<int> conj2);
-    set<set<set<int>>> partition(DeterministicFiniteAutomata AFD1);
     vector<int> stringNum(std::string cad);
     map<pair<set<int>,set<int>>, set<int>> getTransitionsWrite();
     bool equivalencia(set<int> estado1, set<int> estado2);
