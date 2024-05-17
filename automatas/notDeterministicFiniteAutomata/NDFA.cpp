@@ -142,8 +142,9 @@ void NDFA :: menu() {
         }
         NDFA ndfa2;
         NDFA newNDFA;
+        DFA newDFA;
         set<int> set;
-        DeterministicFiniteAutomata dfa;
+        AuxDFA dfa;
         switch (option)
         {
         case 1:
@@ -157,7 +158,8 @@ void NDFA :: menu() {
             break;
         case 3:
             dfa = ndafToDfa();
-            dfa.menu();
+            newDFA = dfa.convert();
+            newDFA.menu();
             break;
         case 4:
             cin.ignore();
@@ -368,8 +370,8 @@ set<int> NDFA :: move(set<int> conjState, int element) {
 }
 
 
-DeterministicFiniteAutomata NDFA :: ndafToDfa() {
-    DeterministicFiniteAutomata dfa;
+AuxDFA NDFA :: ndafToDfa() {
+    AuxDFA dfa;
 
     //otorgandole el alfabeto
     dfa.setAlphabet(this->alphabet);
@@ -493,7 +495,7 @@ NDFA NDFA::concatAFND(NDFA AFND1, NDFA AFND2) {
 
 NDFA NDFA::clausuKlenneAFND(NDFA AFND1) {
   NDFA AFNDresult = AFND1;
-  //The new Initial state 
+  //The new Initial state
   int newInit = 777;
   AFNDresult.setInitialState(newInit);
   AFNDresult.addState(newInit);

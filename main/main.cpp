@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include "../automatas/notDeterministicFiniteAutomata/NDFA.cpp"
-#include "../automatas/deterministicAutomata/DeterministicFiniteAutomata.cpp"
-
+#include "../automatas/auxDFA/AuxDFA.cpp"
+#include "../automatas/DFA/DFA.cpp"
 #include "string"
 using namespace std;
 
@@ -33,7 +33,7 @@ int main() {
 
         }else{
 
-            DeterministicFiniteAutomata dfa;
+            AuxDFA dfa;
             dfa.readFile("../automataExamples/automataFD/" + nameFile + ".dot");
             dfa.menu();
         }

@@ -1,4 +1,4 @@
-#include "DeterministicFiniteAutomata.h"
+#include "AuxDFA.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,64 +7,64 @@
 
 using namespace std;
 
-DeterministicFiniteAutomata ::DeterministicFiniteAutomata() : k(), alphabet(), transitions(), q0(), f()
+AuxDFA ::AuxDFA() : k(), alphabet(), transitions(), q0(), f()
 {
 }
 
 // Getters
-set<set<int>> DeterministicFiniteAutomata::getK()
+set<set<int>> AuxDFA::getK()
 {
   return k;
 }
 
-set<int> DeterministicFiniteAutomata::getAlphabet()
+set<int> AuxDFA::getAlphabet()
 {
   return alphabet;
 }
 
-map<pair<set<int>, int>, set<int>> DeterministicFiniteAutomata::getTransitions()
+map<pair<set<int>, int>, set<int>> AuxDFA::getTransitions()
 {
   return transitions;
 }
 
-set<int> DeterministicFiniteAutomata::getInitialState()
+set<int> AuxDFA::getInitialState()
 {
   return q0;
 }
 
-set<set<int>> DeterministicFiniteAutomata::getFinalStates()
+set<set<int>> AuxDFA::getFinalStates()
 {
   return f;
 }
 
 // Setters
 
-void DeterministicFiniteAutomata ::setK(set<set<int>> k)
+void AuxDFA ::setK(set<set<int>> k)
 {
   this->k = k;
 }
 
-void DeterministicFiniteAutomata::setAlphabet(set<int> alphabet)
+void AuxDFA::setAlphabet(set<int> alphabet)
 {
   this->alphabet = alphabet;
 }
 
-void DeterministicFiniteAutomata ::setTransitions(map<pair<set<int>, int>, set<int>> transitions)
+void AuxDFA ::setTransitions(map<pair<set<int>, int>, set<int>> transitions)
 {
   this->transitions = transitions;
 }
 
-void DeterministicFiniteAutomata::setInitialState(set<int> q0)
+void AuxDFA::setInitialState(set<int> q0)
 {
   this->q0 = q0;
 }
 
-void DeterministicFiniteAutomata::setFinalState(set<set<int>> finalStates)
+void AuxDFA::setFinalState(set<set<int>> finalStates)
 {
   f = finalStates;
 }
 
-void DeterministicFiniteAutomata::addTransition(set<int> q, int r, set<int> destination)
+void AuxDFA::addTransition(set<int> q, int r, set<int> destination)
 {
   pair<set<int>, int> path = {q, r};
   auto it = transitions.find(path);
@@ -80,22 +80,22 @@ void DeterministicFiniteAutomata::addTransition(set<int> q, int r, set<int> dest
   }
 }
 
-void DeterministicFiniteAutomata::addState(set<int> state)
+void AuxDFA::addState(set<int> state)
 {
   this->k.insert(state);
 }
 
-void DeterministicFiniteAutomata::addFinalState(set<int> state)
+void AuxDFA::addFinalState(set<int> state)
 {
   this->f.insert(state);
 }
 
-void DeterministicFiniteAutomata::addNewElementAlphabet(int element)
+void AuxDFA::addNewElementAlphabet(int element)
 {
   this->alphabet.insert(element);
 }
 
-set<int> DeterministicFiniteAutomata ::getTransitionStates(pair<set<int>, int> key)
+set<int> AuxDFA ::getTransitionStates(pair<set<int>, int> key)
 {
   if (transitions.find(key) != transitions.end())
   { // la transicion existe en el map?
@@ -107,7 +107,7 @@ set<int> DeterministicFiniteAutomata ::getTransitionStates(pair<set<int>, int> k
   }
 }
 
-void DeterministicFiniteAutomata ::print()
+void AuxDFA ::print()
 {
   if (q0.empty())
   {
@@ -162,7 +162,7 @@ void DeterministicFiniteAutomata ::print()
   }
 }
 
-void DeterministicFiniteAutomata ::printEstados(set<set<set<int>>> aux)
+void AuxDFA ::printEstados(set<set<set<int>>> aux)
 {
   for (const set<set<int>> &finalState : aux)
   {
@@ -178,7 +178,7 @@ void DeterministicFiniteAutomata ::printEstados(set<set<set<int>>> aux)
   }
 }
 
-void DeterministicFiniteAutomata ::menu()
+void AuxDFA ::menu()
 {
   while (true)
   {
@@ -191,7 +191,7 @@ void DeterministicFiniteAutomata ::menu()
     cout << "Cualquier otro numero VOLVER.\n";
     cout << "Ingresa el numero: ";
     cin >> option;
-    DeterministicFiniteAutomata AFD;
+    AuxDFA AFD;
     if (option != 1 && option != 2 && option != 3)
     {
       break;
@@ -216,7 +216,7 @@ void DeterministicFiniteAutomata ::menu()
   }
 }
 
-void DeterministicFiniteAutomata ::readFile(std::string arch)
+void AuxDFA ::readFile(std::string arch)
 {
 
   ifstream archivo(arch);
@@ -331,7 +331,7 @@ void DeterministicFiniteAutomata ::readFile(std::string arch)
   archivo.close();
 }
 
-vector<int> DeterministicFiniteAutomata ::stringNum(std::string cad)
+vector<int> AuxDFA ::stringNum(std::string cad)
 {
   vector<int> numeros;
   // me crae subcadenas utilizando como delimitador la coma "," ejemplo  "22,3" => "22","3"
@@ -348,7 +348,7 @@ vector<int> DeterministicFiniteAutomata ::stringNum(std::string cad)
   return numeros;
 }
 
-void DeterministicFiniteAutomata ::writeFile(std::string arch)
+void AuxDFA ::writeFile(std::string arch)
 {
   std::ofstream archivo(arch);
   if (!archivo.is_open())
@@ -442,7 +442,7 @@ void DeterministicFiniteAutomata ::writeFile(std::string arch)
   archivo.close();
 }
 
-map<pair<set<int>, set<int>>, set<int>> DeterministicFiniteAutomata ::getTransitionsWrite()
+map<pair<set<int>, set<int>>, set<int>> AuxDFA ::getTransitionsWrite()
 {
   map<pair<set<int>, set<int>>, set<int>> res;
   for (const auto &clave : this->getTransitions())
@@ -457,27 +457,29 @@ map<pair<set<int>, set<int>>, set<int>> DeterministicFiniteAutomata ::getTransit
 }
 
 //testWriteFile
-DeterministicFiniteAutomata DeterministicFiniteAutomata ::partition(DeterministicFiniteAutomata AFD1){
+AuxDFA AuxDFA ::partition(AuxDFA AFD1){
   // llevo la particion de estados inales y no finales
-  DeterministicFiniteAutomata resultado;
+  AuxDFA resultado;
   set<set<set<int>>> P, Pprisma;
   set<set<int>> X, Xprisma;
   set<set<int>> auxiliar;
 
   bool cambioPartition;
+  //Division entre estados finales y estados no finales.
   P.insert(AFD1.getFinalStates());
   for (set<int> elem : AFD1.getK()) {
-    bool aux = false; 
+    bool aux = false;
     // recorro los posibles conjuntos finales
-    for(set<int> conj : AFD1.getFinalStates()) {      
+    for(set<int> conj : AFD1.getFinalStates()) {
      aux = aux || perteneceConjunto(elem, conj);
-    }      
+    }
     if(!aux) {
       auxiliar.insert(elem);
     }
   }
-
   P.insert(auxiliar);
+
+  //comienza la particion de las clases de eq
   cambioPartition = false;
   while (!cambioPartition) {
     //Pprisma = P;
@@ -485,21 +487,20 @@ DeterministicFiniteAutomata DeterministicFiniteAutomata ::partition(Deterministi
       for (set<int> e : X) {
         Xprisma.insert(e);
         for (set<int> Eprisma : X) {
-          if (e != Eprisma && equivalencia(e, Eprisma)) {
+          if (e != Eprisma && (Xprisma.find(Eprisma) == Xprisma.end()) && equivalencia(P,e, Eprisma)) { //si no son iguales y Eprisma no pertenece al conjunto de los marcados y sus transiciones paran en la misma clase de eq
             Xprisma.insert(Eprisma);
           }
-
         }
         Pprisma.insert(Xprisma);
         Xprisma.clear();
       }
     }
-    if (P != Pprisma) {
-      P = Pprisma;
-      Pprisma.clear();
-    } else {
-      cambioPartition = true;
-    }
+      if (P != Pprisma) {
+        P = Pprisma;
+        Pprisma.clear();
+      } else {
+        cambioPartition = true;
+      }
   }
   set<set<int>> Pauxilia;
   for(set<set<int>> el : P) {
@@ -508,7 +509,7 @@ DeterministicFiniteAutomata DeterministicFiniteAutomata ::partition(Deterministi
   for(set<int> el : Pauxilia) {
     resultado.addState(el);
   }
-  
+
   /*for (set<int> state : resultado.getK()){
     cout << "Conjuntos" << endl;
     for (int elem : state){
@@ -519,7 +520,7 @@ DeterministicFiniteAutomata DeterministicFiniteAutomata ::partition(Deterministi
   for(set<int> el : Pauxilia) {
     if(perteneceConjunto(el,AFD1.getInitialState())) {
       resultado.setInitialState(el);
-    }    
+    }
   }
 
   /*cout << "Estado inicial"<< endl;
@@ -534,7 +535,7 @@ DeterministicFiniteAutomata DeterministicFiniteAutomata ::partition(Deterministi
         if(perteneceConjunto(el1,finallly)) {
          resultado.addFinalState(el1);
         }
-    }    
+    }
   }
 
   /*cout << "Estados Finales"<< endl;
@@ -551,7 +552,7 @@ DeterministicFiniteAutomata DeterministicFiniteAutomata ::partition(Deterministi
     for (int simbolo : AFD1.getAlphabet()) {
       // Obtenengo los alcanzables de mi nuvos estados
       set<int> proxEstado = AFD1.getTransitionStates({conjuntoEstado, simbolo});
-      
+
       // Verificar si los estados alcanzables están en algún conjunto de Pauxilia
       for (set<set<int>> estadoDestino : P) {
         for(set<int> ef : estadoDestino) {
@@ -596,7 +597,7 @@ for (set<set<int>> finalState : P){
 }
 
 // retoorna false si no pertenece al conjunto;
-bool DeterministicFiniteAutomata ::perteneceConjunto(set<int> conj1, set<int> conj2) {
+bool AuxDFA ::perteneceConjunto(set<int> conj1, set<int> conj2) {
   bool res = false;
   if(conj1.size() == conj2.size()) {
     res = true;
@@ -612,20 +613,31 @@ bool DeterministicFiniteAutomata ::perteneceConjunto(set<int> conj1, set<int> co
 }
 
 
-bool DeterministicFiniteAutomata ::equivalencia(set<int> estado1, set<int> estado2) {
+bool AuxDFA ::equivalencia(set<set<set<int>>> P, set<int> estado1, set<int> estado2) {
   for (int simbolo : this->getAlphabet()) {
     set<int> proxEstado1 = this->getTransitionStates({estado1, simbolo});
     set<int> proxEstado2 = this->getTransitionStates({estado2, simbolo});
-    if (proxEstado1 != proxEstado2) {
+    set<set<int>> particion = getParticionContainingStates(P, proxEstado1);
+
+    if (particion.find(proxEstado2) != particion.end()) {
       return false;
     }
   }
   return true;
 }
+
+set<set<int>> AuxDFA:: getParticionContainingStates(const set<set<set<int>>>& P, const set<int>& estados){
+    for (const auto& particion : P) {
+        if (particion.find(estados) != particion.end()) {
+            return particion;
+        }
+    }
+    return {};
+}
 /*
-DeterministicFiniteAutomata DeterministicFiniteAutomata ::minimzation(DeterministicFiniteAutomata AFD1)
+AuxDFA AuxDFA ::minimzation(AuxDFA AFD1)
 {
-  DeterministicFiniteAutomata resultMinimized;
+  AuxDFA resultMinimized;
   set<set<set<int>>> partiAFD1 = partition(AFD1);
   set<set<int>> minimiStates;
   set<int> minimiq0;
@@ -662,7 +674,7 @@ DeterministicFiniteAutomata DeterministicFiniteAutomata ::minimzation(Determinis
               }
           }
     }
-  
+
 
   resultMinimized.setAlphabet(AFD1.getAlphabet());
 
@@ -691,7 +703,7 @@ DeterministicFiniteAutomata DeterministicFiniteAutomata ::minimzation(Determinis
   resultMinimized.setInitialState(minimiq0);
 }
 */
-bool DeterministicFiniteAutomata ::pertenece(string s)
+bool AuxDFA ::pertenece(string s)
 {
   set<int> alphabet = this->getAlphabet();
 
@@ -727,3 +739,44 @@ bool DeterministicFiniteAutomata ::pertenece(string s)
 
   return result;
 }
+
+
+DFA AuxDFA::convert() {
+    DFA newDFA;
+    map<set<int>, int> stateMapping;
+    int stateId = 1;
+    set<int> newStates;
+
+    for (const auto& state : k) {
+        stateMapping[state] = stateId;
+        newStates.insert(stateId);
+        stateId++;
+    }
+
+    newDFA.setK(newStates);
+
+    // Set new alphabet
+    newDFA.setAlphabet(alphabet);
+
+    // Set new transitions
+    map<pair<int, int>, int> newTransitions;
+    for (const auto& trans : transitions) {
+        const pair<set<int>, int>& key = trans.first;
+        const set<int>& value = trans.second;
+        int newSrcState = stateMapping[key.first];
+        newTransitions[{newSrcState, key.second}] = stateMapping[value];
+    }
+    newDFA.setTransitions(newTransitions);
+
+    newDFA.setInitialState(stateMapping[q0]);
+
+    set<int> newFinalStates;
+    for (const auto& finalState : f) {
+        newFinalStates.insert(stateMapping[finalState]);
+    }
+    newDFA.setFinalState(newFinalStates);
+
+    return newDFA;
+}
+
+

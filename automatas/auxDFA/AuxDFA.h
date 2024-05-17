@@ -1,14 +1,16 @@
-#ifndef FND_H
-#define FND_H
+#ifndef AuxDFA_H
+#define AuxDFA_H
 
 #include <vector>
 #include <map>
 #include <set>
 #include <utility> // Para std::pair
 #include <string>
+#include "../DFA/DFA.h"
+
 using namespace std;
 
-class DeterministicFiniteAutomata {
+class AuxDFA {
 private:
     set<set<int>> k;                                     //Estados que hay en el automata
     set<int> alphabet;                              //el alfabeto
@@ -17,7 +19,7 @@ private:
     set<set<int>> f;                                     //estados finales
 
 public:
-    DeterministicFiniteAutomata();
+    AuxDFA();
     //geters
     set<set<int>> getK();
     set<int> getAlphabet();
@@ -44,14 +46,17 @@ public:
     void print();
     void menu();
     bool pertenece(string s);
-    DeterministicFiniteAutomata minimzation(DeterministicFiniteAutomata AFD1);
-    DeterministicFiniteAutomata partition(DeterministicFiniteAutomata AFD1);
+    AuxDFA minimzation(AuxDFA AFD1);
+    AuxDFA partition(AuxDFA AFD1);
     void printEstados(set<set<set<int>>> aux);
+
+    DFA convert();
 private:
     bool perteneceConjunto(set<int> conj1, set<int> conj2);
     vector<int> stringNum(std::string cad);
     map<pair<set<int>,set<int>>, set<int>> getTransitionsWrite();
-    bool equivalencia(set<int> estado1, set<int> estado2);
+    bool equivalencia(set<set<set<int>>> P, set<int> estado1, set<int> estado2);
+    set<set<int>> getParticionContainingStates(const set<set<set<int>>>& P, const set<int>& estados);
 
 };
 

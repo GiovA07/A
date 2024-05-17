@@ -7,7 +7,8 @@
 #include <queue>
 #include <utility> // Para std::pair
 #include "../InterfaceFiniteAutomata.h"
-#include "../deterministicAutomata/DeterministicFiniteAutomata.h"
+#include "../auxDFA/AuxDFA.h"
+#include "../DFA/DFA.h"
 #include <string>
 
 
@@ -55,9 +56,7 @@ public:
     set<int> unionSets(set<int> a1, set<int> a2);
     map<pair<int,int>, set<int>> unionTransitions(map<pair<int,int>, set<int>> trans1, map<pair<int,int>, set<int>> trans2);
 
-
-
-    DeterministicFiniteAutomata ndafToDfa();
+    AuxDFA ndafToDfa();
 
 private:
     set<int> lambdaClausure(set<int> state);
