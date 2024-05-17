@@ -41,8 +41,9 @@ public:
     void addFinalState(int state);
     void addNewElementAlphabet(int element);
     int getTransitionStates(pair<int, int> key);
-    // void readFile(string arch);
-    // void writeFile(string arch);
+    void readFile(string arch);
+    void writeFile(string arch);
+    map<pair<int,int>, set<int>> getTransitionsWrite();
     bool pertenece(string s);
     void menu();
     void print();

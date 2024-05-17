@@ -107,7 +107,7 @@ using namespace std;
       cin.ignore();
       cout << "Ingrese el nombre del archivo (sin .dot) para escribir el automata: ";
       getline(cin, nameFile);
-      //writeFile("../automataExamples/automataFD/" + nameFile + ".dot");
+      writeFile("../automataExamples/automataFD/" + nameFile + ".dot");
       break;
     case 3:
       cin.ignore();
@@ -124,7 +124,6 @@ using namespace std;
       AFD.menu();
       break;
     default:
-
       break;
     }
   }
@@ -164,7 +163,139 @@ using namespace std;
             cout << " => " << stateFinal << endl;
         }
     }
+  } 
+
+  void DFA :: readFile(string arch) {
+    ifstream archivo(arch);
+    if(!archivo.is_open()) {
+      cerr << "Error al abrir el archivo" << endl;
+      return;
+    }
+    // recorrer todal las lineas
+    string linea;
+    //expresion regular
+    regex patron0("^digraph\\{");
+    // expresion regular para buscar el estado inicial
+    regex patron1("inic->([0-9]+);");
+    // expresion regular  para buscar las transisicones
+    regex patron2("([0-9]+)->([0-9]+)\\s*\\[label=\"([^\"]*)\"\\];");
+    // expresion regular para buscar estados finales
+    regex patron3("([0-9]+)\\[shape=doublecircle\\]");
+    //consumo la ultima linea
+    regex patron4("}");
+    //
+    regex patron5("rankdir=LR;");
+    //
+    regex patron6("inic\\[shape=point\\];");
+
+
+    while(getline(archivo, linea)) {
+      if(!linea.empty()){
+
+        if(regex_search(linea,patron0)){
+
+        }else if(regex_search(linea,patron5)){
+
+        }else if(regex_search(linea,patron6)){
+
+        }
+        else if(regex_search(linea,patron1)){
+              smatch coincidencias;
+              regex_search(linea, coincidencias, patron1);
+              int valor = stoi(coincidencias[1]);
+              this->addState(valor);
+              this->setInitialState(valor);
+        }else if(regex_search(linea,patron2)){
+              smatch coincidencias;
+              regex_search(linea, coincidencias, patron2);
+              int inicio = stoi(coincidencias[1]);
+              this->addState(inicio);
+              int fin = stoi(coincidencias[2]);
+              this->addState(fin);
+
+              string estiquetas =(coincidencias[3]);
+              vector<int> numeros;
+              //me crae subcadenas utilizando como delimitador la coma "," ejemplo  "22,3" => "22","3"
+              istringstream sublis(estiquetas);
+              string subcad;
+              //obtengo cada una de esas subcadenas separadas por coma
+              while (getline(sublis, subcad, ',')) {
+                int numero;
+                //cambio el tipo de subcadena a entero
+                istringstream(subcad) >> numero;
+                numeros.push_back(numero);
+              }
+
+              for(int num : numeros){
+                if (num != 0)
+                  this->addNewElementAlphabet(num);
+                this->addTransition(inicio,num,fin);
+              }
+
+        }else if(regex_search(linea,patron3)){
+              smatch coincidencias;
+              regex_search(linea, coincidencias, patron3);
+              int fin = stoi(coincidencias[1]);
+              this->addFinalState(fin);
+        }else if(regex_search(linea,patron4)){
+
+        }else{
+        std::cerr << "Error archivo incorrecto" << endl;
+        return;
+      }
+    }
+
+  }
+    archivo.close();
+  }
+
+  void DFA :: writeFile(string arch) {
+  std::ofstream archivo(arch);
+  if(!archivo.is_open()) {
+    cerr << "Error al abrir el archivo" << endl;
+  return;
+  }
+  archivo << "digraph{\n" << std::endl;
+  archivo << "rankdir=LR;" << std::endl;
+  archivo << "inic[shape=point];\n" << std::endl;
+  archivo << "inic->" << this->getInitialState()<< ";\n"<< std::endl;
+  map<pair<int,int>, set<int>> res = this->getTransitionsWrite();
+
+  for(const auto&clave : res) {
+    archivo << clave.first.first << "->" << clave.first.second <<" [label=\"";
+    for(const auto& elem : clave.second) {
+      if(elem == *clave.second.rbegin()){
+      archivo << elem;
+      } else {
+        archivo << elem << ", ";
+      }
+
+    }
+    archivo << "\"];" << std::endl;
+
+  }
+
+  for(const auto& num : this->getFinalStates()) {
+    archivo << "\n" << num << "[shape=doublecircle];" << std::endl;
+  }
+  archivo << "}" << std::endl;
+
+  archivo.close();
+
 }
+
+
+map<pair<int,int>, set<int>> DFA ::getTransitionsWrite(){
+  map<pair<int,int>, set<int>> res;
+  for(const auto&clave : this->getTransitions()) {
+      pair<int,int> path = {clave.first.first,clave.second};
+      res[path].insert(clave.first.second);
+  }
+  return res;
+}
+  
+
+
 
 
 bool DFA ::pertenece(string s)

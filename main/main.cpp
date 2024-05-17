@@ -33,7 +33,7 @@ int main() {
 
         }else{
 
-            AuxDFA dfa;
+            DFA dfa;
             dfa.readFile("../automataExamples/automataFD/" + nameFile + ".dot");
             dfa.menu();
         }
