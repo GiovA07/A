@@ -94,9 +94,11 @@ using namespace std;
     cout << "Cualquier otro numero VOLVER.\n";
     cout << "Ingresa el numero: ";
     cin >> option;
+    set<set<int>> aux;
     DFA AFD;
-    if (option < 1 && option > 4 )
+    if (option < 1 || option > 4 ){
       break;
+    }
 
     switch (option)
     {
@@ -120,8 +122,9 @@ using namespace std;
       }
       break;
     case 4:
-      AFD = partition(*this);
-      //AFD.menu();
+      aux = partition(*this);
+      AFD = minimization(aux, *this);
+      AFD.menu();
       break;
     default:
       break;
@@ -329,7 +332,7 @@ bool DFA ::pertenece(string s)
 }
 
 //testWriteFile
-DFA DFA ::partition(DFA AFD1){
+set<set<int>> DFA ::partition(DFA AFD1){
   // llevo la particion de estados inales y no finales
   DFA resultado;
   set<set<int>> P, Pprisma;
@@ -346,20 +349,15 @@ DFA DFA ::partition(DFA AFD1){
       auxiliar.insert(elem);
   }
   P.insert(auxiliar);
-
   //comienza la particion de las clases de eq
   cambioPartition = false;
   while (!cambioPartition) {
-    //Pprisma = P;
     for (set<int> X : P) {
-      set<int> stateVisited;
       for (int e : X) {
         Xprisma.insert(e);
-        stateVisited.insert(e);
         for (int Eprisma : X) {
-          if (e != Eprisma && (stateVisited.find(Eprisma) == stateVisited.end()) && equivalencia(P,e, Eprisma)) { //si no son iguales y Eprisma no pertenece al conjunto de los marcados y sus transiciones paran en la misma clase de eq
+          if (e != Eprisma  && equivalencia(P,e, Eprisma)) { //si no son iguales y Eprisma no pertenece al conjunto de los marcados y sus transiciones paran en la misma clase de eq
             Xprisma.insert(Eprisma);
-            stateVisited.insert(e);
           }
         }
         Pprisma.insert(Xprisma);
@@ -373,98 +371,49 @@ DFA DFA ::partition(DFA AFD1){
         cambioPartition = true;
       }
   }
+  return P;
+}
 
-  // set<set<int>> Pauxilia;
-  // for(set<set<int>> el : P) {
-  //   Pauxilia.insert(*el.begin());
-  // }
-  // for(set<int> el : Pauxilia) {
-  //   resultado.addState(el);
-  // }
-
-  /*for (set<int> state : resultado.getK()){
-    cout << "Conjuntos" << endl;
-    for (int elem : state){
-      cout << elem << endl;
-    }
-  }*/
-
-  // for(set<int> el : Pauxilia) {
-  //   if(perteneceConjunto(el,AFD1.getInitialState())) {
-  //     resultado.setInitialState(el);
-  //   }
-  // }
-
-  /*cout << "Estado inicial"<< endl;
-  for(int el : resultado.getInitialState()) {
-    cout << el << ",";
+DFA DFA ::minimization(set<set<int>> parti, DFA AFD1) {
+  DFA resultado;
+  set<int> Pauxilia;
+  resultado.setAlphabet(AFD1.getAlphabet());
+  for(set<int> el : parti) {
+    Pauxilia.insert(*el.begin());
   }
-  cout << endl;
-*/
-
-  // for(set<int> el1 : Pauxilia) {
-  //     for(set<int> finallly : AFD1.getFinalStates()){
-  //       if(perteneceConjunto(el1,finallly)) {
-  //        resultado.addFinalState(el1);
-  //       }
-  //   }
-  // }
-
-  /*cout << "Estados Finales"<< endl;
-  for(set<int> el : resultado.getFinalStates()) {
-    cout << "congFinal"<< endl;
-    for (int finn : el) {
-      cout << finn << ",";
-    }
-    cout << endl;
-  }*/
-
-  // agarro los estados de mi Particion de estados
-  // for (set<int> conjuntoEstado : Pauxilia) {
-  //   for (int simbolo : AFD1.getAlphabet()) {
-  //     // Obtenengo los alcanzables de mi nuvos estados
-  //     set<int> proxEstado = AFD1.getTransitionStates({conjuntoEstado, simbolo});
-
-  //     // Verificar si los estados alcanzables están en algún conjunto de Pauxilia
-  //     for (set<set<int>> estadoDestino : P) {
-  //       for(set<int> ef : estadoDestino) {
-  //         if ((perteneceConjunto(proxEstado,ef))) {
-  //             // Agregar la transición al autómata resultado
-  //             resultado.addTransition(conjuntoEstado, simbolo, *estadoDestino.begin());
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  /*cout << "Las transiciones son: " << endl;
-  map<pair<set<int>, int>, set<int>> miMapa = resultado.getTransitions();
-  for (const auto &element : miMapa)
-  {
-    cout << "State: {";
-    for (int num : element.first.first)
-    {
-      cout << num << " ";
-    }
-    cout << "}, by: " << element.first.second << " => {";
-    for (int num : element.second)
-    {
-      cout << num << " ";
-    }
-    cout << "}" << endl;
+  for(int el : Pauxilia) {
+    resultado.addState(el);
   }
-*/
-
-/*
-for (set<set<int>> finalState : P){
-    cout << "conj:" << endl;
-    for (set<int> state : finalState){
-      cout << "SubConjunto" << endl;
-      for (int elem : state){
-        cout << elem << endl;
+  
+  for(int el : Pauxilia) {
+    if (AFD1.getInitialState() == el) {
+      resultado.setInitialState(el);
+    }
+  }
+  for(int el1 : Pauxilia) {
+    for(int finallly : AFD1.getFinalStates()){
+      if(el1 == finallly) {
+       resultado.addFinalState(el1);
       }
     }
-  }*/
+  }
+  // agarro los estados de mi Particion de estados
+  for (int conjuntoEstado : Pauxilia) {
+    for (int simbolo : AFD1.getAlphabet()) {
+      // Obtenengo los alcanzables de mi nuvos estados
+      int proxEstado = AFD1.getTransitionStates({conjuntoEstado, simbolo});
+
+      // Verificar si los estados alcanzables están en algún conjunto de Pauxilia
+      for (set<int> estadoDestino : parti) {
+        for(int ef : estadoDestino) {
+          if (proxEstado == ef) {
+              // Agregar la transición al autómata resultado
+              resultado.addTransition(conjuntoEstado, simbolo, *estadoDestino.begin());
+          }
+        }
+      }
+    }
+  }
   return resultado;
 }
 
@@ -473,16 +422,22 @@ bool DFA::equivalencia(set<set<int>> P, int state1, int state2) {
   for (int simbolo : alfabet) {
     int proxEstado1 = getTransitionStates({state1, simbolo});
     int proxEstado2 = getTransitionStates({state2, simbolo});
-    set<int> particion = getParticionContainingStates(P, proxEstado1);
-
-    if (particion.find(proxEstado2) == particion.end()) {
-      return false;
+    if(proxEstado1 != 0) {
+      if (proxEstado1 != 0 && proxEstado2 == 0){
+        return false;
+      } else {
+        set<int> particion = getParticionContainingStates(P, proxEstado1);
+        if (particion.find(proxEstado2) == particion.end()) {
+          return false;
+        }
+      }
     }
   }
   return true;
 }
 
 set<int> DFA:: getParticionContainingStates(set<set<int>> P, int state){
+    
     for (set<int> particion : P) {
         if (particion.find(state) != particion.end()) {
             return particion;

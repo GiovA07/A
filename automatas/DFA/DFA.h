@@ -48,7 +48,8 @@ public:
     void menu();
     void print();
 
-    DFA partition(DFA AFD1);
+    set<set<int>> partition(DFA AFD1);
+    DFA minimization(set<set<int>> parti, DFA AFD1);
     bool equivalencia(set<set<int>> P, int state1, int state2);
     set<int> getParticionContainingStates(set<set<int>> P, int state);
 };

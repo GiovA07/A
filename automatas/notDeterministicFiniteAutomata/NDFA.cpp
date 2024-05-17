@@ -180,6 +180,7 @@ void NDFA :: menu() {
         case 6:
             newNDFA = clausuKlenneAFND(*this);
             newNDFA.menu();
+            break;
         default:
             break;
         }
