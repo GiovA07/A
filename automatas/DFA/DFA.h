@@ -43,7 +43,7 @@ public:
     int getTransitionStates(pair<int, int> key);
     // void readFile(string arch);
     // void writeFile(string arch);
-    //bool pertenece(string s);
+    bool pertenece(string s);
     void menu();
     void print();
 };

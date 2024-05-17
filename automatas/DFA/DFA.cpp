@@ -76,7 +76,7 @@ using namespace std;
     if (this->transitions.find(key) != this->transitions.end()) { //la transicion existe en el map?
         return transitions[key];
     } else {
-        return {}; //sino existe devuelve conj vacio
+        return 0; //sino existe devuelve conj vacio
     }
   }
 
@@ -89,15 +89,15 @@ using namespace std;
     cout << "Que Quieres Hacer?.\n";
     cout << "1- Mostrarlo por pantalla.\n";
     cout << "2- Escribirlo en un archivo.\n";
-    cout << "3- Aplicar minimizacion al automata.\n";
+    cout << "3- Ver si la cadena es reconocida por el automata.\n";
+    cout << "4- Aplicar minimizacion al automata.\n";
     cout << "Cualquier otro numero VOLVER.\n";
     cout << "Ingresa el numero: ";
     cin >> option;
     DFA AFD;
-    if (option != 1 && option != 2 && option != 3)
-    {
+    if (option < 1 && option > 4 )
       break;
-    }
+
     switch (option)
     {
     case 1:
@@ -110,9 +110,21 @@ using namespace std;
       //writeFile("../automataExamples/automataFD/" + nameFile + ".dot");
       break;
     case 3:
+      cin.ignore();
+      cout << "Ingrese la cadena que quiere reconocer: ";
+      getline(cin, nameFile);
+      if(pertenece(nameFile)) {
+        cout << "La Cadena " << nameFile << " fue aceptada \n";
+      } else {
+        cout << "La Cadena " << nameFile << " NO fue aceptada \n";
+      }
+      break;
+    case 4:
       //AFD = partition(*this);
       AFD.menu();
+      break;
     default:
+
       break;
     }
   }
@@ -152,6 +164,37 @@ using namespace std;
             cout << " => " << stateFinal << endl;
         }
     }
+}
+
+
+bool DFA ::pertenece(string s)
+{
+  set<int> alphabet = this->getAlphabet();
+  map<pair<int, int>, int> transitions = this->getTransitions();
+  int q = this->getInitialState();
+  bool result = true;
+
+  for (size_t i = 0; i < s.length(); ++i)
+  {
+    char caracter = s[i];
+    int element = caracter - '0';
+
+    if (alphabet.find(element) != alphabet.end()) {
+      int state = this->getTransitionStates({q, element});
+      cout << "par: {" << q << element<< "} =>" << state << "\n";
+      if (state == 0)
+        return false;
+      q = state;
+    } else {
+      return false;
+    }
+  }
+
+  set<int> final_States = this->getFinalStates();
+  if (final_States.find(q) == final_States.end())
+    result = false;
+
+  return result;
 }
 
 

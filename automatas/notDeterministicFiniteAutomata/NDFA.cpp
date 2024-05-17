@@ -176,6 +176,7 @@ void NDFA :: menu() {
             ndfa2.readFile("../automataExamples/automataFND/" + nameFile + ".dot");
             newNDFA = concatAFND(*this, ndfa2);
             newNDFA.menu();
+            break;
         case 6:
             newNDFA = clausuKlenneAFND(*this);
             newNDFA.menu();
