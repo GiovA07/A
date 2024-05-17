@@ -47,6 +47,10 @@ public:
     bool pertenece(string s);
     void menu();
     void print();
+
+    DFA partition(DFA AFD1);
+    bool equivalencia(set<set<int>> P, int state1, int state2);
+    set<int> getParticionContainingStates(set<set<int>> P, int state);
 };
 
 #endif
