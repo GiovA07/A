@@ -59,6 +59,7 @@ public:
     AuxDFA ndafToDfa();
 
 private:
+    int busqueda(set<int> k);
     set<int> lambdaClausure(set<int> state);
     set<int> move(set<int> conjState, int element);
     map<pair<int,int>, set<int>> getTransitionsWrite();

@@ -439,7 +439,7 @@ NDFA NDFA::unionAFDWithAFD(NDFA AFND1, NDFA AFND2) {
   NDFA AFNDresult;
   //Union States
   set<int> newK = unionSets(AFND1.getK(), AFND2.getK());
-  int newInit = 77; //TODO: podemos ver que no exista en el K para que sea el nuevo init
+  int newInit = busqueda(newK)+1; //TODO: podemos ver que no exista en el K para que sea el nuevo init
   AFNDresult.setInitialState(newInit);
   newK.insert(newInit);
   AFNDresult.setK(newK);
@@ -450,7 +450,7 @@ NDFA NDFA::unionAFDWithAFD(NDFA AFND1, NDFA AFND2) {
   AFNDresult.addTransition(newInit, LAMBDA, AFND1.getInitialState());
   AFNDresult.addTransition(newInit, LAMBDA, AFND2.getInitialState());
 
-  int newFinalState = 777;
+  int newFinalState = newInit + 1;
   set<int> finalState;
   finalState.insert(newFinalState);
   AFNDresult.setFinalState(finalState);
@@ -475,7 +475,7 @@ NDFA NDFA::concatAFND(NDFA AFND1, NDFA AFND2) {
   //New transitions
   AFNDresult.setTransitions(unionTransitions(AFND1.getTransitions(), AFND2.getTransitions()));
 
-  int intermedioState = 777;
+  int intermedioState = busqueda(newK)+1;
   AFNDresult.addState(intermedioState);
 
   for (int state : AFND1.getFinalStates()) {
@@ -485,7 +485,7 @@ NDFA NDFA::concatAFND(NDFA AFND1, NDFA AFND2) {
   //Del Intermedio Agrego una transicion a el inicial del 2do
   AFNDresult.addTransition(intermedioState, LAMBDA, AFND2.getInitialState());
 
-  int newFinalState = 7777;
+  int newFinalState = intermedioState + 1;
   AFNDresult.addState(newFinalState);
   AFNDresult.addFinalState(newFinalState);
 
@@ -498,12 +498,12 @@ NDFA NDFA::concatAFND(NDFA AFND1, NDFA AFND2) {
 NDFA NDFA::clausuKlenneAFND(NDFA AFND1) {
   NDFA AFNDresult = AFND1;
   //The new Initial state
-  int newInit = 777;
+  int newInit = busqueda(AFNDresult.getK())+1;
   AFNDresult.setInitialState(newInit);
   AFNDresult.addState(newInit);
   AFNDresult.addTransition(newInit, LAMBDA, AFND1.getInitialState());
   //The new final state
-  int newFinalState = 7777;
+  int newFinalState = newInit+1;
   set<int> finalState;
   finalState.insert(newFinalState);
   AFNDresult.addState(newFinalState);
@@ -548,5 +548,15 @@ map<pair<int,int>, set<int>> NDFA:: unionTransitions(map<pair<int,int>, set<int>
     }
 
     return resultMap;
+}
+
+int NDFA ::busqueda(set<int> k){
+  int res = 0;
+  for(int elem : k) {
+    if (res < elem) {
+      res = elem;
+    }
+  }
+  return res;
 }
 
