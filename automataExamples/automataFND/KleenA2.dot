@@ -3,16 +3,20 @@ digraph{
 rankdir=LR;
 inic[shape=point];
 
-inic->21;
+inic->26;
 
 21->22 [label="7"];
 21->23 [label="0, 7"];
 22->22 [label="6"];
 22->23 [label="6"];
+22->27 [label="0"];
 23->23 [label="7"];
 23->24 [label="0"];
 23->25 [label="0"];
 25->23 [label="6"];
+26->21 [label="0"];
+26->27 [label="0"];
+27->26 [label="0"];
 
-22[shape=doublecircle];
+27[shape=doublecircle];
 }

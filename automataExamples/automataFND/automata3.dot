@@ -3,16 +3,16 @@ digraph{
 rankdir=LR;
 inic[shape=point];
 
-inic->8;
+inic->38;
 
-8->9 [label="13"];
-8->10 [label="13"];
-9->11 [label="13"];
-10->12 [label="13"];
-11->11 [label="13,14"];
+38->39 [label="13"];
+38->310 [label="13"];
+39->311 [label="13"];
+310->312 [label="13"];
+311->311 [label="13,14"];
 
-11[shape=doublecircle];
-12[shape=doublecircle];
+311[shape=doublecircle];
+312[shape=doublecircle];
 
 }
 

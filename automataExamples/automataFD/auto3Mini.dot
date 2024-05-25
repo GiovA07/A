@@ -1,0 +1,13 @@
+digraph{
+
+rankdir=LR;
+inic[shape=point];
+
+inic->31;
+
+31->32 [label="8, 9"];
+32->34 [label="8, 9"];
+34->34 [label="8, 9"];
+
+34[shape=doublecircle];
+}

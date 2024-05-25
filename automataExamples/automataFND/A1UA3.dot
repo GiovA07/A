@@ -1,0 +1,25 @@
+digraph{
+
+rankdir=LR;
+inic[shape=point];
+
+inic->313;
+
+1->5 [label="2"];
+5->5 [label="22"];
+5->7 [label="22"];
+5->10 [label="2"];
+7->314 [label="0"];
+10->10 [label="2, 22"];
+38->39 [label="13"];
+38->310 [label="13"];
+39->311 [label="13"];
+310->312 [label="13"];
+311->311 [label="13, 14"];
+311->314 [label="0"];
+312->314 [label="0"];
+313->1 [label="0"];
+313->38 [label="0"];
+
+314[shape=doublecircle];
+}
